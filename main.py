@@ -1,17 +1,11 @@
-from dataManager import DataManager
-from logger import Logger
+
+from person import Person
 
 
-class Main:
-    """Main class for managing the tree"""
-    
-    def __init__(self) -> None:
-        """Setup Instances of classes and data"""
-        self.logger = Logger(20)
-        self.data = DataManager(self)
+person1 = Person(0, "John", "Smith")
+print(person1)
+person2 = Person(1, "Kyle", "Smith")
+person2.mother = person1
 
-        self.data.save("testing", {})
-
-
-if __name__ == '__main__':
-    run = Main()
+for child in person2.children:
+    print(child)
