@@ -11,6 +11,7 @@ class personTests(unittest.TestCase):
         self.mother = Person(1, "Mother", "mcTest", ids.FEMALE)
         self.father = Person(2, "Father", "mcTest", ids.MALE)
         self.sibling = Person(3, "Testa", "mcTest", ids.MALE)
+        self.grandma = Person(6, "GrandTest", "mctest", ids.FEMALE)
 
         self.partner = Person(4, "Testo", "testalon", ids.MALE)
     
@@ -162,7 +163,7 @@ class personTests(unittest.TestCase):
         )
     
     def testPartnerChange(self):
-        partner2 = Person(4, "John", "testFace", ids.MALE)
+        partner2 = Person(5, "John", "testFace", ids.MALE)
 
         self.person.partner = self.partner
         self.person.partner = partner2
@@ -181,6 +182,70 @@ class personTests(unittest.TestCase):
             self.person.partner == None and
             self.partner.partner == None
         )
+
+    
+    def testOneParentSibling(self):
+        self.mother.mother = self.grandma
+        self.sibling.mother = self.grandma
+
+        self.person.mother = self.mother
+
+        self.assertTrue(
+            self.sibling in self.person.getParentSiblings()
+        )
+
+    def testMultipleParentSibling(self):
+        self.mother.mother = self.grandma
+        self.sibling.mother = self.grandma
+
+        sibling2 = Person(7, "SiblingBro", "mcTest", ids.MALE)
+        sibling2.mother = self.grandma
+        sibling3 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling3.mother = self.grandma
+
+        self.person.mother = self.mother
+
+        self.assertTrue(
+            self.sibling in self.person.getParentSiblings() and
+            sibling2 in self.person.getParentSiblings() and
+            sibling3 in self.person.getParentSiblings()
+        )
+    
+    def testAunts(self):
+        self.mother.mother = self.grandma
+        self.sibling.mother = self.grandma
+
+        sibling2 = Person(7, "SiblingSis", "mcTest", ids.FEMALE, "the second")
+        sibling2.mother = self.grandma
+        sibling3 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling3.mother = self.grandma
+
+        self.person.mother = self.mother
+
+        self.assertTrue(
+            self.sibling not in self.person.getAunts() and
+            sibling2 in self.person.getAunts() and
+            sibling3 in self.person.getAunts()
+        )
+
+    def testUncles(self):
+        self.mother.mother = self.grandma
+        self.sibling.mother = self.grandma
+
+        sibling2 = Person(7, "SiblingBro", "mcTest", ids.MALE)
+        sibling2.mother = self.grandma
+        sibling3 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling3.mother = self.grandma
+
+        self.person.mother = self.mother
+
+        self.assertTrue(
+            self.sibling in self.person.getUncles() and
+            sibling2 in self.person.getUncles() and
+            sibling3 not in self.person.getUncles()
+        )
+
+
 
 if __name__ == '__main__':
     unittest.main()

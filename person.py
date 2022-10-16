@@ -3,6 +3,7 @@ from typing import Union, List
 
 from idMappings import ids
 from settings import settings
+from util import flatMap
 
 # logger = logging.getLogger(__name__)
 
@@ -54,6 +55,23 @@ class Person:
         sharedChilderen.remove(self)
 
         return sharedChilderen
+    
+    def getParentSiblings(self) -> set['Person']:
+        motherSiblings = set()
+        fatherSiblings = set()
+        if self.mother is not None:
+            motherSiblings = self.mother.getAllSiblings()
+        if self.father is not None:
+            fatherSiblings = self.father.getAllSiblings()
+
+        allParentSiblings = motherSiblings.union(fatherSiblings)
+        return allParentSiblings
+
+    def getAunts(self) -> set['Person']:
+        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is ids.FEMALE else None)
+
+    def getUncles(self) -> set['Person']:
+        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is ids.MALE else None)
 
     @property
     def sex(self) -> bool:

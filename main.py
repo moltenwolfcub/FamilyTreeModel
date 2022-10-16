@@ -8,7 +8,7 @@ daisy = Person(1, "daisy", "smith", ids.FEMALE)
 bob = Person(0, "bob", "smith", ids.MALE)
 dylan = Person(0, "dylan", "smith", ids.MALE)
 anne = Person(0, "anne", "smith", ids.FEMALE)
-childeren = [john, bob, dylan, anne]
+childeren = {john, bob, dylan, anne}
 
 def addDaisyMother(child: Person):
     child.mother = daisy
