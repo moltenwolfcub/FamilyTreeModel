@@ -1,4 +1,5 @@
 import unittest
+from idMappings import ids
 
 from person import Person
 
@@ -6,10 +7,10 @@ class personTests(unittest.TestCase):
     """Tests for Person class."""
 
     def setUp(self) -> None:
-        self.person = Person(14, "testy", "mcTest")
-        self.mother = Person(20, "Mother", "mcTest")
-        self.father = Person(24, "Father", "mcTest")
-        self.sibling = Person(28, "Testa", "mcTest")
+        self.person = Person(14, "testy", "mcTest", ids.FEMALE)
+        self.mother = Person(20, "Mother", "mcTest", ids.FEMALE)
+        self.father = Person(24, "Father", "mcTest", ids.MALE)
+        self.sibling = Person(28, "Testa", "mcTest", ids.MALE)
     
 
     def testId(self):
@@ -21,7 +22,7 @@ class personTests(unittest.TestCase):
 
     def testFullNameWithMiddle(self):
         middleNames = ["kevin", "bob", "jones"]
-        person = Person(16, "john", "smith", middleNames)
+        person = Person(16, "john", "smith", ids.MALE, middleNames)
         self.assertEqual(person.fullName, 'John Kevin Bob Jones Smith')
 
 
@@ -29,11 +30,11 @@ class personTests(unittest.TestCase):
         self.assertEqual(self.person.middleNames, [])
 
     def testEmptyMiddleNameString(self):
-        testPerson = Person(16, "john", "smith", "kevin")
+        testPerson = Person(16, "john", "smith", ids.MALE, "kevin")
         self.assertEqual(testPerson.middleNames, ['kevin'])
 
     def testMiddleName(self):
-        testPerson = Person(16, "john", "smith", ["kevin", "jones"])
+        testPerson = Person(16, "john", "smith", ids.MALE, ["kevin", "jones"])
         self.assertEqual(testPerson.middleNames, ['kevin', 'jones'])
 
     
@@ -44,7 +45,7 @@ class personTests(unittest.TestCase):
 
     def testMotherWillLoseChildOnReplace(self):
         self.person.mother = self.mother
-        mother = Person(18, "Mother", "mcTest", "beta")
+        mother = Person(18, "Mother", "mcTest", ids.FEMALE, "beta")
         self.person.mother = mother
 
         self.assertFalse(self.person in self.mother.children)
@@ -55,6 +56,11 @@ class personTests(unittest.TestCase):
 
         self.assertFalse(self.person in self.mother.children)
 
+    def testMotherSettingIncorrectSex(self):
+        mother = Person(15, "boyMother", "mcTest", ids.MALE)
+        with self.assertRaises(ValueError):
+            self.person.mother = mother
+
 
     def testFatherHasChild(self):
         self.person.father = self.father
@@ -63,7 +69,7 @@ class personTests(unittest.TestCase):
 
     def testFatherWillLoseChildOnReplace(self):
         self.person.father = self.father
-        father = Person(18, "Father", "mcTest", "beta")
+        father = Person(18, "Father", "mcTest", ids.MALE, "beta")
         self.person.father = father
 
         self.assertFalse(self.person in self.father.children)
@@ -74,7 +80,12 @@ class personTests(unittest.TestCase):
 
         self.assertFalse(self.person in self.father.children)
 
+    def testFatherSettingIncorrectSex(self):
+        father = Person(15, "girlFather", "mcTest", ids.FEMALE)
+        with self.assertRaises(ValueError):
+            self.person.father = father
     
+
     def testOneSiblings(self):
         self.person.father = self.father
         self.person.mother = self.mother
@@ -89,7 +100,7 @@ class personTests(unittest.TestCase):
 
         self.sibling.mother = self.mother
         self.sibling.father = self.father
-        sibling = Person(32, "OtherSibling", "mctest")
+        sibling = Person(32, "OtherSibling", "mctest", ids.FEMALE)
         sibling.mother = self.mother
         sibling.father = self.father
 
@@ -119,10 +130,10 @@ class personTests(unittest.TestCase):
 
         self.sibling.mother = self.mother
 
-        sibling2 = Person(40, "siblingPerson", "mcTest", "beta")
+        sibling2 = Person(40, "siblingPerson", "mcTest", ids.MALE, "beta")
         sibling2.father = self.father
 
-        sibling3 = Person(42, "siblingPerson", "mcTest")
+        sibling3 = Person(42, "siblingPerson", "mcTest", ids.FEMALE)
         sibling3.father = self.father
         sibling3.mother = self.mother
 
