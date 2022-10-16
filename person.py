@@ -31,7 +31,7 @@ class Person:
         self.children: set[Person] = set()
 
     def __str__(self) -> str:
-        return f"Person <name: {self.fullName}, id: {self.id}, sex: {self.sex}>"
+        return f"Person <name: {self.fullName}, id: {self.id}, sex: {ids.convertSexBool(self.sex)}>"
 
 
     def getDirectSiblings(self) -> set['Person']:
