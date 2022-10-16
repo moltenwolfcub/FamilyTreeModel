@@ -2,6 +2,7 @@ import unittest
 from idMappings import ids
 
 from person import Person
+from settings import settings
 
 class personTests(unittest.TestCase):
     """Tests for Person class."""
@@ -62,8 +63,11 @@ class personTests(unittest.TestCase):
 
     def testMotherSettingIncorrectSex(self):
         mother = Person(15, "boyMother", "mcTest", ids.MALE)
-        with self.assertRaises(ValueError):
-            self.person.mother = mother
+        if settings.ignoreSex:
+            self.assertTrue(True)
+        else:
+            with self.assertRaises(ValueError):
+                self.person.mother = mother
 
 
     def testFatherHasChild(self):
@@ -86,8 +90,11 @@ class personTests(unittest.TestCase):
 
     def testFatherSettingIncorrectSex(self):
         father = Person(15, "girlFather", "mcTest", ids.FEMALE)
-        with self.assertRaises(ValueError):
-            self.person.father = father
+        if settings.ignoreSex:
+            self.assertTrue(True)
+        else:
+            with self.assertRaises(ValueError):
+                self.person.father = father
     
 
     def testOneSiblings(self):
@@ -184,6 +191,26 @@ class personTests(unittest.TestCase):
             self.partner.partner == None
         )
 
+    def testPartnerChangeExAddition(self):
+        partner2 = Person(5, "John", "testFace", ids.MALE)
+
+        self.person.partner = self.partner
+        self.person.partner = partner2
+
+        self.assertTrue(
+            self.partner in self.person.exPartners and
+            self.person in self.partner.exPartners
+        )
+
+    def testPartnerRemovalExCreation(self):
+        self.person.partner = self.partner
+        self.person.partner = None
+
+        self.assertTrue(
+            self.partner in self.person.exPartners and
+            self.person in self.partner.exPartners
+        )
+
     
     def testOneParentSibling(self):
         self.mother.mother = self.grandma
@@ -272,10 +299,10 @@ class personTests(unittest.TestCase):
 
 
     def testOneCousins(self):
-        self.person.mother = self.mother #make mum
-        self.mother.mother = self.grandma #make grandma
-        self.sibling.mother = self.grandma #make uncle
-        self.cousin.father = self.sibling #make cousin
+        self.person.mother = self.mother
+        self.mother.mother = self.grandma
+        self.sibling.mother = self.grandma
+        self.cousin.father = self.sibling
         self.assertTrue(self.cousin in self.person.getCousins())
 
 

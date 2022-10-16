@@ -22,7 +22,9 @@ class Person:
         self.middleNames = middleNames
 
         self._sex = sex #biological sex stored as an 'isFemale' (True = f, False = m)
+
         self._partner: 'Person' = None
+        self.exPartners: set[Person] = set()
 
         self._mother: 'Person' = None
         self._father: 'Person' = None
@@ -80,6 +82,9 @@ class Person:
                 cousins.add(child)
         
         return cousins
+    
+    def getExPartners(self) -> set['Person']:
+        pass
 
 
     @property
@@ -149,10 +154,14 @@ class Person:
     def partner(self, partner: 'Person'):
         if partner is None:
             if self._partner is not None:
+                self.exPartners.add(self._partner)
+                self._partner.exPartners.add(self)
                 self._partner._partner = None
             self._partner = partner
         else:
             if self._partner is not None:
+                self._partner.exPartners.add(self)
+                self.exPartners.add(self._partner)
                 self._partner.partner = None
 
             self._partner = partner
