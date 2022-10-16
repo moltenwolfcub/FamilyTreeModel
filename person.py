@@ -84,7 +84,12 @@ class Person:
         return cousins
     
     def getExPartners(self) -> set['Person']:
-        pass
+        return self.exPartners
+    
+    def getAllPartners(self) -> set['Person']:
+        exs = self.exPartners
+        exs.add(self.partner)
+        return exs
 
 
     @property
