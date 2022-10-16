@@ -12,6 +12,7 @@ class personTests(unittest.TestCase):
         self.father = Person(2, "Father", "mcTest", ids.MALE)
         self.sibling = Person(3, "Testa", "mcTest", ids.MALE)
         self.grandma = Person(6, "GrandTest", "mctest", ids.FEMALE)
+        self.cousin = Person(11, "CousinTest", "mctest", ids.MALE)
 
         self.partner = Person(4, "Testo", "testalon", ids.MALE)
     
@@ -222,10 +223,22 @@ class personTests(unittest.TestCase):
 
         self.person.mother = self.mother
 
+        grandad = Person(89, "grandad", "mcTest2", ids.MALE)
+        self.father.father = grandad
+
+        sibling4 = Person(7, "SiblingSis", "mcTest", ids.FEMALE, "the second")
+        sibling4.father = grandad
+        sibling5 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling5.father = grandad
+
+        self.person.father = self.father
+
         self.assertTrue(
             self.sibling not in self.person.getAunts() and
             sibling2 in self.person.getAunts() and
-            sibling3 in self.person.getAunts()
+            sibling3 in self.person.getAunts() and
+            sibling4 in self.person.getAunts() and
+            sibling5 in self.person.getAunts()
         )
 
     def testUncles(self):
@@ -239,12 +252,31 @@ class personTests(unittest.TestCase):
 
         self.person.mother = self.mother
 
+        grandad = Person(89, "grandad", "mcTest2", ids.MALE)
+        self.father.father = grandad
+
+        sibling4 = Person(7, "SiblingSis", "mcTest", ids.MALE, "the second")
+        sibling4.father = grandad
+        sibling5 = Person(8, "SiblingSis", "mcTest", ids.MALE)
+        sibling5.father = grandad
+
+        self.person.father = self.father
+
         self.assertTrue(
             self.sibling in self.person.getUncles() and
             sibling2 in self.person.getUncles() and
-            sibling3 not in self.person.getUncles()
+            sibling3 not in self.person.getUncles() and
+            sibling4 in self.person.getUncles() and
+            sibling5 in self.person.getUncles()
         )
 
+
+    def testOneCousins(self):
+        self.person.mother = self.mother #make mum
+        self.mother.mother = self.grandma #make grandma
+        self.sibling.mother = self.grandma #make uncle
+        self.cousin.father = self.sibling #make cousin
+        self.assertTrue(self.cousin in self.person.getCousins())
 
 
 if __name__ == '__main__':

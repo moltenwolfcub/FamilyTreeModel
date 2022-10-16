@@ -73,6 +73,15 @@ class Person:
     def getUncles(self) -> set['Person']:
         return flatMap(self.getParentSiblings(), lambda person: person if person.sex is ids.MALE else None)
 
+    def getCousins(self) -> set['Person']:
+        cousins = set()
+        for parentSib in self.getParentSiblings():
+            for child in parentSib.children:
+                cousins.add(child)
+        
+        return cousins
+
+
     @property
     def sex(self) -> bool:
         """The bioligical sex of this person"""

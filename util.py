@@ -3,5 +3,8 @@ def flatMap(values: list, f: 'function') -> list:
     for i in values:
         x = f(i)
         if x is not None:
-            returnlist.append(x)
+            if type(x) is list:
+                returnlist.extend(x)
+            else:
+                returnlist.append(x)
     return returnlist
