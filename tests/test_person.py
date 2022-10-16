@@ -7,14 +7,16 @@ class personTests(unittest.TestCase):
     """Tests for Person class."""
 
     def setUp(self) -> None:
-        self.person = Person(14, "testy", "mcTest", ids.FEMALE)
-        self.mother = Person(20, "Mother", "mcTest", ids.FEMALE)
-        self.father = Person(24, "Father", "mcTest", ids.MALE)
-        self.sibling = Person(28, "Testa", "mcTest", ids.MALE)
+        self.person = Person(0, "testy", "mcTest", ids.FEMALE)
+        self.mother = Person(1, "Mother", "mcTest", ids.FEMALE)
+        self.father = Person(2, "Father", "mcTest", ids.MALE)
+        self.sibling = Person(3, "Testa", "mcTest", ids.MALE)
+
+        self.partner = Person(4, "Testo", "testalon", ids.MALE)
     
 
     def testId(self):
-        self.assertEqual(self.person.id, 14)
+        self.assertEqual(self.person.id, 0)
 
 
     def testFullName(self):
@@ -149,6 +151,36 @@ class personTests(unittest.TestCase):
         self.person.mother = self.mother
 
         self.assertNotIn(self.person, self.person.getAllSiblings())
+
+
+    def testPartner(self):
+        self.person.partner = self.partner
+
+        self.assertTrue(
+            self.person.partner == self.partner and
+            self.partner.partner == self.person
+        )
+    
+    def testPartnerChange(self):
+        partner2 = Person(4, "John", "testFace", ids.MALE)
+
+        self.person.partner = self.partner
+        self.person.partner = partner2
+
+        self.assertTrue(
+            self.person.partner == partner2 and
+            self.partner.partner == None and
+            partner2.partner == self.person
+        )
+
+    def testPartnerNoneSetter(self):
+        self.person.partner = self.partner
+        self.person.partner = None
+
+        self.assertTrue(
+            self.person.partner == None and
+            self.partner.partner == None
+        )
 
 if __name__ == '__main__':
     unittest.main()

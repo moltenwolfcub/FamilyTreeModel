@@ -1,11 +1,27 @@
 
+from idMappings import ids
 from person import Person
+from util import flatMap
 
+john = Person(0, "john", "smith", ids.MALE)
+daisy = Person(1, "daisy", "smith", ids.FEMALE)
+bob = Person(0, "bob", "smith", ids.MALE)
+dylan = Person(0, "dylan", "smith", ids.MALE)
+anne = Person(0, "anne", "smith", ids.FEMALE)
+childeren = [john, bob, dylan, anne]
 
-person1 = Person(0, "John", "Smith")
-print(person1)
-person2 = Person(1, "Kyle", "Smith")
-person2.mother = person1
+def addDaisyMother(child: Person):
+    child.mother = daisy
+childeren = flatMap(childeren, addDaisyMother)
 
-for child in person2.children:
-    print(child)
+def isFemale(person: Person):
+    if person.sex is ids.FEMALE:
+        return person
+    return None
+def isMale(person: Person):
+    if person.sex is ids.MALE:
+        return person
+    return None
+
+for i in flatMap(john.getAllSiblings(), (lambda person: person if person.sex is ids.MALE else None)):
+    print(i)

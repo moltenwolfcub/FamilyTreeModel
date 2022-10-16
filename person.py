@@ -2,13 +2,14 @@ import logging
 from typing import Union, List
 
 from idMappings import ids
+from settings import settings
 
 # logger = logging.getLogger(__name__)
 
 class Person:
-    """Main class for managing the tree"""
+    """Main class for managing a person in the tree"""
     
-    def __init__(self, id: int, firstName: str, lastName: str, sex: 'bool', middleNames: Union[str,List[str]] = []) -> None:
+    def __init__(self, id: int, firstName: str, lastName: str, sex: bool, middleNames: Union[str,List[str]] = []) -> None:
         """Setup Instances of classes and data"""
 
         self.id = id
@@ -20,13 +21,14 @@ class Person:
         self.middleNames = middleNames
 
         self._sex = sex #biological sex stored as an 'isFemale' (True = f, False = m)
+        self._partner: 'Person' = None
 
         self._mother: 'Person' = None
         self._father: 'Person' = None
         self.children: set[Person] = set()
 
     def __str__(self) -> str:
-        return f"Person <name: {self.fullName}, id: {self.id}>"
+        return f"Person <name: {self.fullName}, id: {self.id}, sex: {self.sex}>"
 
 
     def getDirectSiblings(self) -> set['Person']:
@@ -77,36 +79,54 @@ class Person:
         """The person's biological father"""
         return self._father
 
+    @property
+    def partner(self) -> 'Person':
+        """The person's partner of a relationship"""
+        return self._partner
+
     @mother.setter
-    def mother(self, mother: 'Person', force: 'bool' = False) -> None:
+    def mother(self, mother: 'Person') -> None:
         """Change person's biological mother to the given Person"""
         if mother is None:
             if self._mother is not None:
                 self._mother.children.remove(self)
             self._mother = mother
         else:
-            if mother.sex is ids.FEMALE or force:
+            if mother.sex is ids.FEMALE or settings.ignoreSex:
                 if self._mother is not None:
                     self._mother.children.remove(self)
                 mother.children.add(self)
                 self._mother = mother
             else:
                 raise ValueError("""The Biological Mother provided isn't female. 
-                If you want to set this anyway, run with force set to True.""")
+                If you want to set this anyway, chagne ignoreSex to True in settings.""")
 
     @father.setter
-    def father(self, father: 'Person', force: 'bool' = False) -> None:
+    def father(self, father: 'Person') -> None:
         """Change person's biological father to the given Person"""
         if father is None:
             if self._father is not None:
                 self._father.children.remove(self)
             self._father = father
         else:
-            if father.sex is ids.MALE or force:
+            if father.sex is ids.MALE or settings.ignoreSex:
                 if self._father is not None:
                     self._father.children.remove(self)
                 father.children.add(self)
                 self._father = father
             else:
                 raise ValueError("""The Biological Father provided isn't male. 
-                If you want to set this anyway, run with force set to True.""")
+                If you want to set this anyway, chagne ignoreSex to True in settings.""")
+    
+    @partner.setter
+    def partner(self, partner: 'Person'):
+        if partner is None:
+            if self._partner is not None:
+                self._partner._partner = None
+            self._partner = partner
+        else:
+            if self._partner is not None:
+                self._partner.partner = None
+
+            self._partner = partner
+            partner._partner = self
