@@ -1,21 +1,21 @@
 import unittest
-from idMappings import ids
+from idMappings import Ids
 
 from person import Person
-from settings import settings
+from Settings import Settings
 
 class personTests(unittest.TestCase):
     """Tests for Person class."""
 
     def setUp(self) -> None:
-        self.person = Person(0, "testy", "mcTest", ids.FEMALE)
-        self.mother = Person(1, "Mother", "mcTest", ids.FEMALE)
-        self.father = Person(2, "Father", "mcTest", ids.MALE)
-        self.sibling = Person(3, "Testa", "mcTest", ids.MALE)
-        self.grandma = Person(6, "GrandTest", "mctest", ids.FEMALE)
-        self.cousin = Person(11, "CousinTest", "mctest", ids.MALE)
+        self.person = Person(0, "testy", "mcTest", Ids.FEMALE)
+        self.mother = Person(1, "Mother", "mcTest", Ids.FEMALE)
+        self.father = Person(2, "Father", "mcTest", Ids.MALE)
+        self.sibling = Person(3, "Testa", "mcTest", Ids.MALE)
+        self.grandma = Person(6, "GrandTest", "mctest", Ids.FEMALE)
+        self.cousin = Person(11, "CousinTest", "mctest", Ids.MALE)
 
-        self.partner = Person(4, "Testo", "testalon", ids.MALE)
+        self.partner = Person(4, "Testo", "testalon", Ids.MALE)
     
 
     def testId(self):
@@ -27,7 +27,7 @@ class personTests(unittest.TestCase):
 
     def testFullNameWithMiddle(self):
         middleNames = ["kevin", "bob", "jones"]
-        person = Person(16, "john", "smith", ids.MALE, middleNames)
+        person = Person(16, "john", "smith", Ids.MALE, middleNames)
         self.assertEqual(person.fullName, 'John Kevin Bob Jones Smith')
 
 
@@ -35,11 +35,11 @@ class personTests(unittest.TestCase):
         self.assertEqual(self.person.middleNames, [])
 
     def testEmptyMiddleNameString(self):
-        testPerson = Person(16, "john", "smith", ids.MALE, "kevin")
+        testPerson = Person(16, "john", "smith", Ids.MALE, "kevin")
         self.assertEqual(testPerson.middleNames, ['kevin'])
 
     def testMiddleName(self):
-        testPerson = Person(16, "john", "smith", ids.MALE, ["kevin", "jones"])
+        testPerson = Person(16, "john", "smith", Ids.MALE, ["kevin", "jones"])
         self.assertEqual(testPerson.middleNames, ['kevin', 'jones'])
 
     
@@ -50,7 +50,7 @@ class personTests(unittest.TestCase):
 
     def testMotherWillLoseChildOnReplace(self):
         self.person.mother = self.mother
-        mother = Person(18, "Mother", "mcTest", ids.FEMALE, "beta")
+        mother = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
         self.person.mother = mother
 
         self.assertFalse(self.person in self.mother.children)
@@ -62,8 +62,8 @@ class personTests(unittest.TestCase):
         self.assertFalse(self.person in self.mother.children)
 
     def testMotherSettingIncorrectSex(self):
-        mother = Person(15, "boyMother", "mcTest", ids.MALE)
-        if settings.ignoreSex:
+        mother = Person(15, "boyMother", "mcTest", Ids.MALE)
+        if Settings.ignoreSex:
             self.assertTrue(True)
         else:
             with self.assertRaises(ValueError):
@@ -77,7 +77,7 @@ class personTests(unittest.TestCase):
 
     def testFatherWillLoseChildOnReplace(self):
         self.person.father = self.father
-        father = Person(18, "Father", "mcTest", ids.MALE, "beta")
+        father = Person(18, "Father", "mcTest", Ids.MALE, "beta")
         self.person.father = father
 
         self.assertFalse(self.person in self.father.children)
@@ -89,8 +89,8 @@ class personTests(unittest.TestCase):
         self.assertFalse(self.person in self.father.children)
 
     def testFatherSettingIncorrectSex(self):
-        father = Person(15, "girlFather", "mcTest", ids.FEMALE)
-        if settings.ignoreSex:
+        father = Person(15, "girlFather", "mcTest", Ids.FEMALE)
+        if Settings.ignoreSex:
             self.assertTrue(True)
         else:
             with self.assertRaises(ValueError):
@@ -111,7 +111,7 @@ class personTests(unittest.TestCase):
 
         self.sibling.mother = self.mother
         self.sibling.father = self.father
-        sibling = Person(32, "OtherSibling", "mctest", ids.FEMALE)
+        sibling = Person(32, "OtherSibling", "mctest", Ids.FEMALE)
         sibling.mother = self.mother
         sibling.father = self.father
 
@@ -141,10 +141,10 @@ class personTests(unittest.TestCase):
 
         self.sibling.mother = self.mother
 
-        sibling2 = Person(40, "siblingPerson", "mcTest", ids.MALE, "beta")
+        sibling2 = Person(40, "siblingPerson", "mcTest", Ids.MALE, "beta")
         sibling2.father = self.father
 
-        sibling3 = Person(42, "siblingPerson", "mcTest", ids.FEMALE)
+        sibling3 = Person(42, "siblingPerson", "mcTest", Ids.FEMALE)
         sibling3.father = self.father
         sibling3.mother = self.mother
 
@@ -171,7 +171,7 @@ class personTests(unittest.TestCase):
         )
     
     def testPartnerChange(self):
-        partner2 = Person(5, "John", "testFace", ids.MALE)
+        partner2 = Person(5, "John", "testFace", Ids.MALE)
 
         self.person.partner = self.partner
         self.person.partner = partner2
@@ -192,7 +192,7 @@ class personTests(unittest.TestCase):
         )
 
     def testPartnerChangeExAddition(self):
-        partner2 = Person(5, "John", "testFace", ids.MALE)
+        partner2 = Person(5, "John", "testFace", Ids.MALE)
 
         self.person.partner = self.partner
         self.person.partner = partner2
@@ -226,9 +226,9 @@ class personTests(unittest.TestCase):
         self.mother.mother = self.grandma
         self.sibling.mother = self.grandma
 
-        sibling2 = Person(7, "SiblingBro", "mcTest", ids.MALE)
+        sibling2 = Person(7, "SiblingBro", "mcTest", Ids.MALE)
         sibling2.mother = self.grandma
-        sibling3 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling3.mother = self.grandma
 
         self.person.mother = self.mother
@@ -243,19 +243,19 @@ class personTests(unittest.TestCase):
         self.mother.mother = self.grandma
         self.sibling.mother = self.grandma
 
-        sibling2 = Person(7, "SiblingSis", "mcTest", ids.FEMALE, "the second")
+        sibling2 = Person(7, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
         sibling2.mother = self.grandma
-        sibling3 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling3.mother = self.grandma
 
         self.person.mother = self.mother
 
-        grandad = Person(89, "grandad", "mcTest2", ids.MALE)
+        grandad = Person(89, "grandad", "mcTest2", Ids.MALE)
         self.father.father = grandad
 
-        sibling4 = Person(7, "SiblingSis", "mcTest", ids.FEMALE, "the second")
+        sibling4 = Person(7, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
         sibling4.father = grandad
-        sibling5 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling5 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling5.father = grandad
 
         self.person.father = self.father
@@ -272,19 +272,19 @@ class personTests(unittest.TestCase):
         self.mother.mother = self.grandma
         self.sibling.mother = self.grandma
 
-        sibling2 = Person(7, "SiblingBro", "mcTest", ids.MALE)
+        sibling2 = Person(7, "SiblingBro", "mcTest", Ids.MALE)
         sibling2.mother = self.grandma
-        sibling3 = Person(8, "SiblingSis", "mcTest", ids.FEMALE)
+        sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling3.mother = self.grandma
 
         self.person.mother = self.mother
 
-        grandad = Person(89, "grandad", "mcTest2", ids.MALE)
+        grandad = Person(89, "grandad", "mcTest2", Ids.MALE)
         self.father.father = grandad
 
-        sibling4 = Person(7, "SiblingSis", "mcTest", ids.MALE, "the second")
+        sibling4 = Person(7, "SiblingSis", "mcTest", Ids.MALE, "the second")
         sibling4.father = grandad
-        sibling5 = Person(8, "SiblingSis", "mcTest", ids.MALE)
+        sibling5 = Person(8, "SiblingSis", "mcTest", Ids.MALE)
         sibling5.father = grandad
 
         self.person.father = self.father

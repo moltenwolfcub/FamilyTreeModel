@@ -1,8 +1,8 @@
 import logging
 from typing import Union, List
 
-from idMappings import ids
-from settings import settings
+from idMappings import Ids
+from settings import Settings
 from util import flatMap
 
 # logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class Person:
         self.children: set[Person] = set()
 
     def __str__(self) -> str:
-        return f"Person <name: {self.fullName}, id: {self.id}, sex: {ids.convertSexBool(self.sex)}>"
+        return f"Person <name: {self.fullName}, id: {self.id}, sex: {Ids.convertSexBool(self.sex)}>"
 
 
     def getDirectSiblings(self) -> set['Person']:
@@ -70,10 +70,10 @@ class Person:
         return allParentSiblings
 
     def getAunts(self) -> set['Person']:
-        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is ids.FEMALE else None)
+        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is Ids.FEMALE else None)
 
     def getUncles(self) -> set['Person']:
-        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is ids.MALE else None)
+        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is Ids.MALE else None)
 
     def getCousins(self) -> set['Person']:
         cousins = set()
@@ -129,7 +129,7 @@ class Person:
                 self._mother.children.remove(self)
             self._mother = mother
         else:
-            if mother.sex is ids.FEMALE or settings.ignoreSex:
+            if mother.sex is Ids.FEMALE or Settings.ignoreSex:
                 if self._mother is not None:
                     self._mother.children.remove(self)
                 mother.children.add(self)
@@ -146,7 +146,7 @@ class Person:
                 self._father.children.remove(self)
             self._father = father
         else:
-            if father.sex is ids.MALE or settings.ignoreSex:
+            if father.sex is Ids.MALE or Settings.ignoreSex:
                 if self._father is not None:
                     self._father.children.remove(self)
                 father.children.add(self)

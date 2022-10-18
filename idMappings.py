@@ -1,5 +1,5 @@
 
-class ids:
+class Ids:
     """A class to store Ids of hard-coded data for readability"""
     #person sex
     FEMALE = True
