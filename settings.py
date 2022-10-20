@@ -9,7 +9,7 @@ class Settings:
     screenHeight:int = 800
     backgroundColor:tuple[int,int,int] = (150, 150, 150)
     #tile
-    tileWidth:int = 200
+    tileWidth:int = 300
     tileHeight:int = 100
     tileBorderThickness:int = 5
     tileSexSize:int = 22
@@ -22,6 +22,7 @@ class Settings:
 
     tileFontColor:tuple[int,int,int] = (0, 0, 0)
     tileSmallNameFontColor:tuple[int,int,int] = (40, 40, 40)
+    tileIdFontColor:tuple[int,int,int] = (70, 70, 70)
     tileFemaleColor:tuple[int,int,int] = (210, 60, 210)
     tileMaleColor:tuple[int,int,int] = (77, 115, 217)
 

@@ -52,8 +52,11 @@ class Tile:
         self.renderer.screen.fill(Settings.tileMainColor, drawRect)
 
         #name
-        self.renderer.screen.blit(self.name_image, self.name_rect)
-        self.renderer.screen.blit(self.fullname_image, self.fullname_rect)
+        self.renderer.screen.blit(self.nameImage, self.nameRect)
+        self.renderer.screen.blit(self.fullnameImage, self.fullnameRect)
+
+        #id
+        self.renderer.screen.blit(self.idImage, self.idRect)
 
         #sex
         drawRect: pygame.Rect = pygame.Rect(
@@ -77,12 +80,16 @@ class Tile:
     def updateInfo(self):
         """Update drawable objects based on self.person data"""
         name: str = self.person.simpleName
-        self.name_image = self.nameFont.render(name, True, Settings.tileFontColor, None)
-        self.name_rect = self.name_image.get_rect()
+        self.nameImage = self.nameFont.render(name, True, Settings.tileFontColor, None)
+        self.nameRect = self.nameImage.get_rect()
 
         fullName: str = self.person.fullName
-        self.fullname_image = self.smallNameFont.render(fullName, True, Settings.tileSmallNameFontColor, None)
-        self.fullname_rect = self.fullname_image.get_rect()
+        self.fullnameImage = self.smallNameFont.render(fullName, True, Settings.tileSmallNameFontColor, None)
+        self.fullnameRect = self.fullnameImage.get_rect()
+
+        id: str = self.person.id
+        self.idImage = self.smallNameFont.render(str(id), True, Settings.tileSmallNameFontColor, None)
+        self.idRect = self.idImage.get_rect()
 
         if self.person.sex is Ids.FEMALE:
             self.sexColor: int = Settings.tileFemaleColor
@@ -93,15 +100,15 @@ class Tile:
             sexLetter: str = "M"
         else:
             raise ValueError("This tile's person doesn't have a proper sex")
-
         self.sexLetterImage = self.sexFont.render(sexLetter, True, Settings.tileFontColor, None)
 
         self.updateDrawPos()
 
     def updateDrawPos(self):
         """Update draw location of objects"""
-        self.name_rect.topleft = (self.rect.left + Settings.tileBorderThickness*2, self.rect.top + Settings.tileBorderThickness*2)
-        self.fullname_rect.topleft = (self.rect.left + Settings.tileBorderThickness*2, self.rect.top + Settings.tileBorderThickness*2 + Settings.fontNameSize - 5)
+        self.nameRect.topleft = (self.rect.left + Settings.tileBorderThickness*2, self.rect.top + Settings.tileBorderThickness*2)
+        self.fullnameRect.topleft = (self.rect.left + Settings.tileBorderThickness*2, self.rect.top + Settings.tileBorderThickness*2 + Settings.fontSmallNameSize)
+        self.idRect.bottomright = (self.rect.right - Settings.tileBorderThickness-2, self.rect.bottom - Settings.tileBorderThickness)
 
     def centre(self):
         """Centre the tile"""
