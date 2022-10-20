@@ -11,7 +11,8 @@ if TYPE_CHECKING:
 class Tile:
     def __init__(self, renderer: 'TreeRenderer', person: Person) -> None:
         """Setup assets and variables for a tile"""
-        self.nameFont = pygame.font.SysFont(Settings.fontFamily, Settings.fontSize)
+        self.nameFont = pygame.font.SysFont(Settings.fontFamily, Settings.fontNameSize)
+        self.smallNameFont = pygame.font.SysFont(Settings.fontFamily, Settings.fontSmallNameSize)
         self.sexFont = pygame.font.SysFont(Settings.fontFamily, Settings.fontSexSize)
 
         self.renderer: 'TreeRenderer' = renderer
@@ -52,6 +53,7 @@ class Tile:
 
         #name
         self.renderer.screen.blit(self.name_image, self.name_rect)
+        self.renderer.screen.blit(self.fullname_image, self.fullname_rect)
 
         #sex
         drawRect: pygame.Rect = pygame.Rect(
@@ -74,9 +76,13 @@ class Tile:
 
     def updateInfo(self):
         """Update drawable objects based on self.person data"""
-        name: str = self.person.fullName
+        name: str = self.person.simpleName
         self.name_image = self.nameFont.render(name, True, Settings.tileFontColor, None)
         self.name_rect = self.name_image.get_rect()
+
+        fullName: str = self.person.fullName
+        self.fullname_image = self.smallNameFont.render(fullName, True, Settings.tileSmallNameFontColor, None)
+        self.fullname_rect = self.fullname_image.get_rect()
 
         if self.person.sex is Ids.FEMALE:
             self.sexColor: int = Settings.tileFemaleColor
@@ -95,6 +101,7 @@ class Tile:
     def updateDrawPos(self):
         """Update draw location of objects"""
         self.name_rect.topleft = (self.rect.left + Settings.tileBorderThickness*2, self.rect.top + Settings.tileBorderThickness*2)
+        self.fullname_rect.topleft = (self.rect.left + Settings.tileBorderThickness*2, self.rect.top + Settings.tileBorderThickness*2 + Settings.fontNameSize - 5)
 
     def centre(self):
         """Centre the tile"""

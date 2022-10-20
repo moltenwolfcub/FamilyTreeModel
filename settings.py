@@ -21,11 +21,13 @@ class Settings:
     tileMainColor:tuple[int,int,int] = (127, 127, 127)
 
     tileFontColor:tuple[int,int,int] = (0, 0, 0)
+    tileSmallNameFontColor:tuple[int,int,int] = (40, 40, 40)
     tileFemaleColor:tuple[int,int,int] = (210, 60, 210)
     tileMaleColor:tuple[int,int,int] = (77, 115, 217)
 
     #otherSettings
     #font
-    fontSize:int = 24
+    fontNameSize:int = 24
+    fontSmallNameSize:int = 18
     fontSexSize:int = tileSexSize + 7
-    fontFamily:str = None
+    fontFamily:str = ""

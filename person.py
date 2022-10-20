@@ -107,6 +107,12 @@ class Person:
         return fullName.title()
 
     @property
+    def simpleName(self) -> str:
+        """The person's first and last name formatted"""
+        fullName = f"{self.firstName} {self.lastName}"
+        return fullName.title()
+
+    @property
     def mother(self) -> 'Person':
         """The person's biological mother"""
         return self._mother

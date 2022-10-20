@@ -2,7 +2,7 @@ import unittest
 from idMappings import Ids
 
 from person import Person
-from Settings import Settings
+from settings import Settings
 
 class personTests(unittest.TestCase):
     """Tests for Person class."""
@@ -29,6 +29,14 @@ class personTests(unittest.TestCase):
         middleNames = ["kevin", "bob", "jones"]
         person = Person(16, "john", "smith", Ids.MALE, middleNames)
         self.assertEqual(person.fullName, 'John Kevin Bob Jones Smith')
+
+    def testSimpleName(self):
+        self.assertEqual(self.person.simpleName, 'Testy Mctest')
+
+    def testSimpleNameWithMiddle(self):
+        middleNames = ["kevin", "bob", "jones"]
+        person = Person(16, "john", "smith", Ids.MALE, middleNames)
+        self.assertEqual(person.simpleName, 'John Smith')
 
 
     def testEmptyMiddleName(self):
