@@ -15,7 +15,7 @@ class TreeRenderer:
         pygame.display.set_caption("Family Tree")
         self.screenSize = pygame.display.get_window_size()
 
-        self.tmpPerson: Person = Person(0, "Temp", "McTemporary", Ids.MALE)
+        self.tmpPerson: Person = Person(0, "Testy", "McTest", Ids.MALE, "Test")
         self.tmpTile: 'Tile' = Tile(self, self.tmpPerson)
         self.tmpTile.centre()
 
@@ -49,6 +49,7 @@ class TreeRenderer:
         self.screenSize = pygame.display.get_window_size()
         pygame.display.update()
 
+
     def main(self) -> None:
         while True:
             self.input()
@@ -56,7 +57,7 @@ class TreeRenderer:
 
     def exit(self) -> None:
         sys.exit()
-        
+
 
 if __name__ == '__main__':
     instance = TreeRenderer()
