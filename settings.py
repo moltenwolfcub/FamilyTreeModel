@@ -9,7 +9,7 @@ class Settings:
     screenHeight:int = 800
     backgroundColor:tuple[int,int,int] = (150, 150, 150)
     #tile
-    tileWidth:int = 300
+    tileWidth:int = 200
     tileHeight:int = 100
     tileBorderThickness:int = 5
     tileSexSize:int = 22
