@@ -35,8 +35,6 @@ class Tile:
 		"""Draw the tile at its current location."""
 		self.updateDrawPos()
 
-		self.drawRelations()
-
 		#mid
 		pygame.draw.rect(self.renderer.screen, Settings.tileMidBorderColor, self.rect)
 

@@ -91,6 +91,8 @@ class TreeRenderer:
         self.screen.fill(Settings.backgroundColor)
 
         for tile in self.tiles:
+            tile.drawRelations()
+        for tile in self.tiles:
             tile.draw()
 
         self.screenSize = pygame.display.get_window_size()
