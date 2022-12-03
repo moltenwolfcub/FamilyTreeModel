@@ -84,7 +84,15 @@ class Tile:
         self.renderer.screen.blit(self.sexLetterImage, drawRect)
 
     def drawRelations(self):
-        pygame.draw.line(self.renderer.screen, Settings.motherRelationColor, self.rect.center, (50, 30), 5)
+        if (self.person.mother != None):
+            motherTile: 'Tile' = Mappings.person2TileMapping.get(self.person.mother)
+            pygame.draw.line(self.renderer.screen, Settings.motherRelationColor, 
+                self.rect.center, motherTile.rect.center, Settings.relationLineThickness)
+
+        if (self.person.father != None):
+            fatherTile: 'Tile' = Mappings.person2TileMapping.get(self.person.father)
+            pygame.draw.line(self.renderer.screen, Settings.fatherRelationColor, 
+                self.rect.center, fatherTile.rect.center, Settings.relationLineThickness)
 
 
     def updateInfo(self):

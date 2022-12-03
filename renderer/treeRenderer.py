@@ -22,11 +22,15 @@ class TreeRenderer:
         self.tmpPerson: Person = Person(0, "Testy", "McTest", Ids.MALE, "Test")
         self.tmpMother: Person = Person(1, "Tesa", "McTest", Ids.FEMALE)
         self.tmpPerson.mother = self.tmpMother
+        self.tmpFather: Person = Person(2, "Testo", "McTest", Ids.MALE)
+        self.tmpPerson.father = self.tmpFather
 
         self.tmpTile: 'Tile' = Tile(self, self.tmpPerson)
         self.tmpTile.centre()
         self.tmpMotherTile: 'Tile' = Tile(self, self.tmpMother)
         self.tmpMotherTile.centre()
+        self.tmpFatherTile: 'Tile' = Tile(self, self.tmpFather)
+        self.tmpFatherTile.centre()
 
 
         self.mouse_pos = pygame.mouse.get_pos()
@@ -49,6 +53,8 @@ class TreeRenderer:
         self.mouse_pos = pygame.mouse.get_pos()
         if pygame.mouse.get_pressed()[0]:
             self.tmpTile.rect.center = self.mouse_pos
+        if pygame.mouse.get_pressed()[1]:
+            self.tmpFatherTile.rect.center = self.mouse_pos
         if pygame.mouse.get_pressed()[2]:
             self.tmpMotherTile.rect.center = self.mouse_pos
 
@@ -58,6 +64,7 @@ class TreeRenderer:
         self.screen.fill(Settings.backgroundColor)
         self.tmpTile.draw()
         self.tmpMotherTile.draw()
+        self.tmpFatherTile.draw()
 
         self.screenSize = pygame.display.get_window_size()
         pygame.display.update()
