@@ -6,6 +6,7 @@ from utils.idMappings import Ids
 
 from personData.person import Person
 from utils.settings import Settings
+from utils.personTileMappings import Mappings
 
 if TYPE_CHECKING:
     from renderer.treeRenderer import TreeRenderer
@@ -20,6 +21,8 @@ class Tile:
         self.renderer: 'TreeRenderer' = renderer
         self.person: Person = person
         self.rect: pygame.Rect = pygame.Rect(0, 0, Settings.tileWidth, Settings.tileHeight)
+
+        Mappings.addTile(self.person, self)
 
         self.updateInfo()
 
@@ -81,7 +84,7 @@ class Tile:
         self.renderer.screen.blit(self.sexLetterImage, drawRect)
 
     def drawRelations(self):
-        pygame.draw.line
+        pygame.draw.line(self.renderer.screen, Settings.motherRelationColor, self.rect.center, (50, 30), 5)
 
 
     def updateInfo(self):

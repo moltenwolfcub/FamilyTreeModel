@@ -25,6 +25,8 @@ class Settings:
     tileIdFontColor:tuple[int,int,int] = (70, 70, 70)
     tileFemaleColor:tuple[int,int,int] = (210, 60, 210)
     tileMaleColor:tuple[int,int,int] = (77, 115, 217)
+    #relations
+    motherRelationColor:tuple[int,int] = (255, 0, 0)
 
     #otherSettings
     #font

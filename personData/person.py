@@ -164,7 +164,7 @@ class Person:
                 If you want to set this anyway, chagne ignoreSex to True in settings.""")
     
     @partner.setter
-    def partner(self, partner: 'Person'):
+    def partner(self, partner: 'Person') -> None:
         if partner is None:
             if self._partner is not None:
                 self.exPartners.add(self._partner)
