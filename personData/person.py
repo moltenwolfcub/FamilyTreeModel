@@ -1,9 +1,11 @@
-import logging
+import logging, sys
 from typing import Union, List
 
-from idMappings import Ids
-from settings import Settings
-from util import flatMap
+sys.path.append('../familyTreeModel')
+
+from utils.idMappings import Ids
+from utils.settings import Settings
+from utils.util import flatMap
 
 # logger = logging.getLogger(__name__)
 

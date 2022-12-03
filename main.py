@@ -1,7 +1,7 @@
 
-from idMappings import Ids
-from person import Person
-from util import flatMap
+from utils.idMappings import Ids
+from personData.person import Person
+from utils.util import flatMap
 
 john = Person(0, "john", "smith", Ids.MALE)
 daisy = Person(1, "daisy", "smith", Ids.FEMALE)

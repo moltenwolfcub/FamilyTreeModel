@@ -1,12 +1,14 @@
-import pygame
-from typing import TYPE_CHECKING
-from idMappings import Ids
+import pygame, sys
+sys.path.append('../familyTreeModel')
 
-from person import Person
-from settings import Settings
+from typing import TYPE_CHECKING
+from utils.idMappings import Ids
+
+from personData.person import Person
+from utils.settings import Settings
 
 if TYPE_CHECKING:
-    from treeRenderer import TreeRenderer
+    from renderer.treeRenderer import TreeRenderer
 
 class Tile:
     def __init__(self, renderer: 'TreeRenderer', person: Person) -> None:
@@ -26,22 +28,24 @@ class Tile:
         """Draw the tile at its current location."""
         self.updateDrawPos()
 
+        self.drawRelations()
+
         #mid
-        self.renderer.screen.fill(Settings.tileMidBorderColor, self.rect)
+        pygame.draw.rect(self.renderer.screen, Settings.tileMidBorderColor, self.rect)
 
         #light
         drawRect: pygame.Rect = pygame.Rect(
             self.rect.x, self.rect.y,
             self.rect.width- Settings.tileBorderThickness, self.rect.height - Settings.tileBorderThickness
         )
-        self.renderer.screen.fill(Settings.tileLightBorderColor, drawRect)
+        pygame.draw.rect(self.renderer.screen, Settings.tileLightBorderColor, drawRect)
 
         #dark
         drawRect: pygame.Rect = pygame.Rect(
             self.rect.x+Settings.tileBorderThickness, self.rect.y+Settings.tileBorderThickness,
             self.rect.width- Settings.tileBorderThickness, self.rect.height - Settings.tileBorderThickness
         )
-        self.renderer.screen.fill(Settings.tileDarkBorderColor, drawRect)
+        pygame.draw.rect(self.renderer.screen, Settings.tileDarkBorderColor, drawRect)
 
 
         #main
@@ -49,7 +53,7 @@ class Tile:
             self.rect.x+Settings.tileBorderThickness, self.rect.y+Settings.tileBorderThickness,
             self.rect.width- 2*Settings.tileBorderThickness, self.rect.height - 2*Settings.tileBorderThickness
         )
-        self.renderer.screen.fill(Settings.tileMainColor, drawRect)
+        pygame.draw.rect(self.renderer.screen, Settings.tileMainColor, drawRect)
 
         #name
         self.renderer.screen.blit(self.nameImage, self.nameRect)
@@ -64,7 +68,7 @@ class Tile:
             self.rect.y+Settings.tileBorderThickness+Settings.tileSexBorderOffset,
             Settings.tileSexSize, Settings.tileSexSize
         )
-        self.renderer.screen.fill(self.sexColor, drawRect)
+        pygame.draw.rect(self.renderer.screen, self.sexColor, drawRect)
 
         sexLetterWidth = self.sexLetterImage.get_width()
         sexLetterHeight = self.sexLetterImage.get_height()
@@ -75,6 +79,9 @@ class Tile:
         drawRect.width = sexLetterWidth
         drawRect.height = sexLetterHeight
         self.renderer.screen.blit(self.sexLetterImage, drawRect)
+
+    def drawRelations(self):
+        pygame.draw.line
 
 
     def updateInfo(self):

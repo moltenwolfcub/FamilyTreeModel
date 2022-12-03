@@ -1,8 +1,8 @@
 import unittest
-from idMappings import Ids
+from utils.idMappings import Ids
 
-from person import Person
-from settings import Settings
+from personData.person import Person
+from utils.settings import Settings
 
 class personTests(unittest.TestCase):
     """Tests for Person class."""

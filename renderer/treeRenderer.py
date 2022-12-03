@@ -1,9 +1,12 @@
 import sys, pygame
-from idMappings import Ids
-from person import Person
-from personTile import Tile
 
-from settings import Settings
+sys.path.append('../familyTreeModel')
+
+from utils.idMappings import Ids
+from personData.person import Person
+from renderer.personTile import Tile
+
+from utils.settings import Settings
 
 class TreeRenderer:
     """A class responsible for rendering a family tree"""
@@ -15,9 +18,16 @@ class TreeRenderer:
         pygame.display.set_caption("Family Tree")
         self.screenSize = pygame.display.get_window_size()
 
+
         self.tmpPerson: Person = Person(0, "Testy", "McTest", Ids.MALE, "Test")
+        self.tmpMother: Person = Person(1, "Tesa", "McTest", Ids.FEMALE)
+        self.tmpPerson.mother = self.tmpMother
+
         self.tmpTile: 'Tile' = Tile(self, self.tmpPerson)
         self.tmpTile.centre()
+        self.tmpMotherTile: 'Tile' = Tile(self, self.tmpMother)
+        self.tmpMotherTile.centre()
+
 
         self.mouse_pos = pygame.mouse.get_pos()
 
@@ -39,12 +49,15 @@ class TreeRenderer:
         self.mouse_pos = pygame.mouse.get_pos()
         if pygame.mouse.get_pressed()[0]:
             self.tmpTile.rect.center = self.mouse_pos
+        if pygame.mouse.get_pressed()[2]:
+            self.tmpMotherTile.rect.center = self.mouse_pos
 
 
 
     def update(self) -> None:
         self.screen.fill(Settings.backgroundColor)
         self.tmpTile.draw()
+        self.tmpMotherTile.draw()
 
         self.screenSize = pygame.display.get_window_size()
         pygame.display.update()
