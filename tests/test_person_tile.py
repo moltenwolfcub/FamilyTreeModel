@@ -24,9 +24,19 @@ class personTests(unittest.TestCase):
     def testCorrectPerson(self) -> None:
         self.assertEqual(self.mainTile.person, self.mainPerson)
 
-    def testMappingReturns(self) -> None:
-        self.assertEqual(Mappings.person2TileMapping.get(self.mainPerson), self.mainTile)
-        self.assertEqual(Mappings.tile2PersonMapping.get(self.mainTile), self.mainPerson)
+
+    def testTileRetrievalFromId(self) -> None:
+        self.assertEqual(Mappings.getTileFromPersonId(self.mainPerson.id), self.mainTile)
+
+    def testPersonIdRetrievalFromTile(self) -> None:
+        self.assertEqual(Mappings.getPersonIdFromTile(self.mainTile), self.mainPerson.id)
+
+    def testPersonRetrievalFromTile(self) -> None:
+        self.assertEqual(Mappings.getPersonFromTile(self.mainTile), self.mainPerson)
+
+    def testTileRetrievalFromPerson(self) -> None:
+        self.assertEqual(Mappings.getTileFromPerson(self.mainPerson), self.mainTile)
+
 
     def testRelationTileRetevial(self) -> None:
-        self.assertEqual(Mappings.person2TileMapping.get(self.mainPerson.mother), self.motherTile)
+        self.assertEqual(Mappings.getTileFromPersonId(self.mainPerson.mother.id), self.motherTile)

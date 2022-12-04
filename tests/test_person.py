@@ -52,22 +52,39 @@ class personTests(unittest.TestCase):
 
     
     def testMotherHasChild(self):
-        self.person.mother = self.mother
+        self.person.setMother(self.mother)
+        hasChild = False
 
-        self.assertTrue(self.person in self.mother.children)
+        for ship in self.mother.children:
+            if (ship.isChild(self.person)):
+                hasChild = True
+
+        self.assertTrue(hasChild)
 
     def testMotherWillLoseChildOnReplace(self):
-        self.person.mother = self.mother
+        self.person.setMother(self.mother)
         mother = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
-        self.person.mother = mother
+        self.person.setMother(mother)
 
-        self.assertFalse(self.person in self.mother.children)
+        hasChild = False
+
+        for ship in self.mother.children:
+            if (ship.isChild(self.person)):
+                hasChild = True
+
+        self.assertFalse(hasChild)
 
     def testMotherRemoval(self):
-        self.person.mother = self.mother
-        self.person.mother = None
+        self.person.setMother(self.mother)
+        self.person.setMother(None)
 
-        self.assertFalse(self.person in self.mother.children)
+        hasChild = False
+
+        for ship in self.mother.children:
+            if (ship.isChild(self.person)):
+                hasChild = True
+
+        self.assertFalse(hasChild)
 
     def testMotherSettingIncorrectSex(self):
         mother = Person(15, "boyMother", "mcTest", Ids.MALE)
@@ -75,23 +92,28 @@ class personTests(unittest.TestCase):
             self.assertTrue(True)
         else:
             with self.assertRaises(ValueError):
-                self.person.mother = mother
+                self.person.setMother(mother)
 
 
     def testFatherHasChild(self):
-        self.person.father = self.father
+        self.person.setFather(self.father)
 
-        self.assertTrue(self.person in self.father.children)
+        hasChild = False
+        for ship in self.father.children:
+            if (ship.isChild(self.person)):
+                hasChild = True
+
+        self.assertTrue(hasChild)
 
     def testFatherWillLoseChildOnReplace(self):
-        self.person.father = self.father
+        self.person.setFather(self.father)
         father = Person(18, "Father", "mcTest", Ids.MALE, "beta")
         self.person.father = father
 
         self.assertFalse(self.person in self.father.children)
 
     def testFatherRemoval(self):
-        self.person.father = self.father
+        self.person.setFather(self.father)
         self.person.father = None
 
         self.assertFalse(self.person in self.father.children)
@@ -102,93 +124,88 @@ class personTests(unittest.TestCase):
             self.assertTrue(True)
         else:
             with self.assertRaises(ValueError):
-                self.person.father = father
+                self.person.setFather(father)
     
 
     def testOneSiblings(self):
-        self.person.father = self.father
-        self.person.mother = self.mother
-        self.sibling.mother = self.mother
-        self.sibling.father = self.father
+        self.person.setFather(self.father)
+        self.person.setMother(self.mother)
+        self.sibling.setMother(self.mother)
+        self.sibling.setFather(self.father)
 
         self.assertIn(self.sibling, self.person.getDirectSiblings())
 
     def testMultipleSiblings(self):
-        self.person.father = self.father
-        self.person.mother = self.mother
+        self.person.setFather(self.father)
+        self.person.setMother(self.mother)
 
-        self.sibling.mother = self.mother
-        self.sibling.father = self.father
+        self.sibling.setMother(self.mother)
+        self.sibling.setFather(self.father)
         sibling = Person(32, "OtherSibling", "mctest", Ids.FEMALE)
-        sibling.mother = self.mother
-        sibling.father = self.father
+        sibling.setMother(self.mother)
+        sibling.setFather(self.father)
 
-        self.assertTrue(self.sibling in self.person.getDirectSiblings() and sibling in self.person.getDirectSiblings())
+        self.assertTrue(self.sibling in self.person.getDirectSiblings())
+        self.assertTrue(sibling in self.person.getDirectSiblings())
 
     def testNotOwnSiblings(self):
-        self.person.father = self.father
-        self.person.mother = self.mother
+        self.person.setFather(self.father)
+        self.person.setMother(self.mother)
 
         self.assertNotIn(self.person, self.person.getDirectSiblings())
 
     def testIncompleteParentsSiblingCheck(self):
-        self.person.father = self.father
+        self.person.setFather(self.father)
 
         self.assertEqual(self.person.getDirectSiblings(), set())
 
     def testOneHalfSibling(self):
-        self.person.father = self.father
-        self.person.mother = self.mother
-        self.sibling.mother = self.mother
+        self.person.setFather(self.father)
+        self.person.setMother(self.mother)
+        self.sibling.setMother(self.mother)
 
         self.assertIn(self.sibling, self.person.getAllSiblings())
 
     def testMultipleHalfSiblings(self):
-        self.person.father = self.father
-        self.person.mother = self.mother
+        self.person.setFather(self.father)
+        self.person.setMother(self.mother)
 
-        self.sibling.mother = self.mother
+        self.sibling.setMother(self.mother)
 
         sibling2 = Person(40, "siblingPerson", "mcTest", Ids.MALE, "beta")
-        sibling2.father = self.father
+        sibling2.setFather(self.father)
 
         sibling3 = Person(42, "siblingPerson", "mcTest", Ids.FEMALE)
-        sibling3.father = self.father
-        sibling3.mother = self.mother
+        sibling3.setFather(self.father)
+        sibling3.setMother(self.mother)
 
 
-        self.assertTrue(
-            self.sibling in self.person.getAllSiblings() and 
-            sibling2 in self.person.getAllSiblings() and
-            sibling3 in self.person.getAllSiblings()
-            )
+        self.assertTrue(self.sibling in self.person.getAllSiblings())
+        self.assertTrue(sibling2 in self.person.getAllSiblings())
+        self.assertTrue(sibling3 in self.person.getAllSiblings())
 
     def testNotOwnAllSiblings(self):
-        self.person.father = self.father
-        self.person.mother = self.mother
+        self.person.setFather(self.father)
+        self.person.setMother(self.mother)
 
         self.assertNotIn(self.person, self.person.getAllSiblings())
 
 
     def testPartner(self):
-        self.person.partner = self.partner
+        self.person.setPartner(self.partner)
 
-        self.assertTrue(
-            self.person.partner == self.partner and
-            self.partner.partner == self.person
-        )
+        self.assertEqual(self.person.partner.getOtherPerson(self.person), self.partner)
+        self.assertEqual(self.partner.partner.getOtherPerson(self.partner), self.person)
     
     def testPartnerChange(self):
         partner2 = Person(5, "John", "testFace", Ids.MALE)
 
-        self.person.partner = self.partner
-        self.person.partner = partner2
+        self.person.setPartner(self.partner)
+        self.person.setPartner(partner2)
 
-        self.assertTrue(
-            self.person.partner == partner2 and
-            self.partner.partner == None and
-            partner2.partner == self.person
-        )
+        self.assertEqual(self.person.partner.getOtherPerson(self.person), partner2)
+        self.assertEqual(self.partner.partner, None)
+        self.assertEqual(partner2.partner.getOtherPerson(partner2), self.person)
 
     def testPartnerNoneSetter(self):
         self.person.partner = self.partner
@@ -202,100 +219,108 @@ class personTests(unittest.TestCase):
     def testPartnerChangeExAddition(self):
         partner2 = Person(5, "John", "testFace", Ids.MALE)
 
-        self.person.partner = self.partner
-        self.person.partner = partner2
+        self.person.setPartner(self.partner)
+        self.person.setPartner(partner2)
 
-        self.assertTrue(
-            self.partner in self.person.exPartners and
-            self.person in self.partner.exPartners
-        )
+        hasEx = False
+        for ship in self.person.exPartners:
+            if (ship.contains(self.partner)):
+                hasEx = True
+        self.assertTrue(hasEx)
+
+        hasEx = False
+        for ship in self.partner.exPartners:
+            if (ship.contains(self.person)):
+                hasEx = True
+        self.assertTrue(hasEx)
 
     def testPartnerRemovalExCreation(self):
-        self.person.partner = self.partner
-        self.person.partner = None
+        self.person.setPartner(self.partner)
+        self.person.setPartner(None)
 
-        self.assertTrue(
-            self.partner in self.person.exPartners and
-            self.person in self.partner.exPartners
-        )
+        hasEx = False
+        for ship in self.person.exPartners:
+            if (ship.contains(self.partner)):
+                hasEx = True
+        self.assertTrue(hasEx)
+
+        hasEx = False
+        for ship in self.partner.exPartners:
+            if (ship.contains(self.person)):
+                hasEx = True
+        self.assertTrue(hasEx)
 
     
     def testOneParentSibling(self):
-        self.mother.mother = self.grandma
-        self.sibling.mother = self.grandma
+        self.mother.setMother(self.grandma)
+        self.sibling.setMother(self.grandma)
 
-        self.person.mother = self.mother
+        self.person.setMother(self.mother)
 
-        self.assertTrue(
-            self.sibling in self.person.getParentSiblings()
-        )
+        self.assertTrue(self.sibling in self.person.getParentSiblings())
 
     def testMultipleParentSibling(self):
-        self.mother.mother = self.grandma
-        self.sibling.mother = self.grandma
+        self.mother.setMother(self.grandma)
+        self.sibling.setMother(self.grandma)
 
         sibling2 = Person(7, "SiblingBro", "mcTest", Ids.MALE)
-        sibling2.mother = self.grandma
+        sibling2.setMother(self.grandma)
         sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
-        sibling3.mother = self.grandma
+        sibling3.setMother(self.grandma)
 
-        self.person.mother = self.mother
+        self.person.setMother(self.mother)
 
-        self.assertTrue(
-            self.sibling in self.person.getParentSiblings() and
-            sibling2 in self.person.getParentSiblings() and
-            sibling3 in self.person.getParentSiblings()
-        )
+        self.assertIn(self.sibling, self.person.getParentSiblings())
+        self.assertIn(sibling2, self.person.getParentSiblings())
+        self.assertIn(sibling3, self.person.getParentSiblings())
     
     def testAunts(self):
-        self.mother.mother = self.grandma
-        self.sibling.mother = self.grandma
+        self.mother.setMother(self.grandma)
+        self.sibling.setMother(self.grandma)
 
         sibling2 = Person(7, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
-        sibling2.mother = self.grandma
+        sibling2.setMother(self.grandma)
         sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
-        sibling3.mother = self.grandma
+        sibling3.setMother(self.grandma)
 
-        self.person.mother = self.mother
+        self.person.setMother(self.mother)
 
         grandad = Person(89, "grandad", "mcTest2", Ids.MALE)
-        self.father.father = grandad
+        self.father.setFather(grandad)
 
-        sibling4 = Person(7, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
-        sibling4.father = grandad
-        sibling5 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
-        sibling5.father = grandad
+        sibling4 = Person(9, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
+        sibling4.setFather(grandad)
+        sibling5 = Person(10, "SiblingSis", "mcTest", Ids.FEMALE)
+        sibling5.setFather(grandad)
 
-        self.person.father = self.father
+        self.person.setFather(self.father)
 
-        self.assertTrue(
-            self.sibling not in self.person.getAunts() and
-            sibling2 in self.person.getAunts() and
-            sibling3 in self.person.getAunts() and
-            sibling4 in self.person.getAunts() and
-            sibling5 in self.person.getAunts()
-        )
+        self.assertNotIn(self.sibling, self.person.getAunts())
+        self.assertIn(sibling2, self.person.getParentSiblings())
+        self.assertIn(sibling3, self.person.getParentSiblings())
+        self.assertIn(sibling4, self.person.getParentSiblings())
+        self.assertIn(sibling5, self.person.getParentSiblings())
 
     def testUncles(self):
-        self.mother.mother = self.grandma
-        self.sibling.mother = self.grandma
+        self.mother.setMother(self.grandma)
+        self.sibling.setMother(self.grandma)
 
         sibling2 = Person(7, "SiblingBro", "mcTest", Ids.MALE)
-        sibling2.mother = self.grandma
+        sibling2.setMother(self.grandma)
         sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
-        sibling3.mother = self.grandma
+        sibling3.setMother(self.grandma)
 
-        self.person.mother = self.mother
+        self.person.setMother(self.mother)
 
         grandad = Person(89, "grandad", "mcTest2", Ids.MALE)
-        self.father.father = grandad
+        self.father.setFather(grandad)
 
-        sibling4 = Person(7, "SiblingSis", "mcTest", Ids.MALE, "the second")
-        sibling4.father = grandad
-        sibling5 = Person(8, "SiblingSis", "mcTest", Ids.MALE)
-        sibling5.father = grandad
+        sibling4 = Person(9, "SiblingSis", "mcTest", Ids.MALE, "the second")
+        sibling4.setFather(grandad)
+        sibling5 = Person(10, "SiblingSis", "mcTest", Ids.MALE)
+        sibling5.setFather(grandad)
 
-        self.person.father = self.father
+        self.person.setFather(self.father)
 
         self.assertTrue(
             self.sibling in self.person.getUncles() and
@@ -307,11 +332,11 @@ class personTests(unittest.TestCase):
 
 
     def testOneCousins(self):
-        self.person.mother = self.mother
-        self.mother.mother = self.grandma
-        self.sibling.mother = self.grandma
-        self.cousin.father = self.sibling
-        self.assertTrue(self.cousin in self.person.getCousins())
+        self.person.setMother(self.mother)
+        self.mother.setMother(self.grandma)
+        self.sibling.setMother(self.grandma)
+        self.cousin.setFather(self.sibling)
+        self.assertIn(self.cousin, self.person.getCousins())
 
 
 if __name__ == '__main__':

@@ -32,8 +32,8 @@ class TreeRenderer:
         self.tmpMother: Person = Person(1, "Tesa", "McTest", Ids.FEMALE)
         self.tmpFather: Person = Person(2, "Testo", "McTest", Ids.MALE)
 
-        self.tmpPerson.father = self.tmpFather
-        self.tmpPerson.mother = self.tmpMother
+        self.tmpPerson.setFather(self.tmpFather)
+        self.tmpPerson.setMother(self.tmpMother)
 
         self.tmpTile: Tile = Tile(self, self.tmpPerson)
         self.tmpFatherTile: Tile = Tile(self, self.tmpFather)

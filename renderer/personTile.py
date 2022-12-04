@@ -87,12 +87,12 @@ class Tile:
 
 	def drawRelations(self):
 		if (self.person.mother != None):
-			motherTile: 'Tile' = Mappings.person2TileMapping.get(self.person.mother)
+			motherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.mother.getParent().id)
 			pygame.draw.line(self.renderer.screen, Settings.motherRelationColor, 
 				self.rect.center, motherTile.rect.center, Settings.relationLineThickness)
 
 		if (self.person.father != None):
-			fatherTile: 'Tile' = Mappings.person2TileMapping.get(self.person.father)
+			fatherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.father.getParent().id)
 			pygame.draw.line(self.renderer.screen, Settings.fatherRelationColor, 
 				self.rect.center, fatherTile.rect.center, Settings.relationLineThickness)
 
