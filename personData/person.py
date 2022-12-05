@@ -30,8 +30,8 @@ class Person:
         self.partner: PartneredRelation = None
         self.exPartners: set[ExPartnerRelation] = set()
 
-        self.mother: ParentChildRelation = None
-        self.father: ParentChildRelation = None
+        self.mother: MotherChildRelation = None
+        self.father: FatherChildRelation = None
         self.children: set[ParentChildRelation] = set()
 
         Mappings.addPerson(self)
@@ -49,7 +49,7 @@ class Person:
             if mother.sex is Ids.FEMALE or Settings.ignoreSex:
                 if self.mother is not None:
                     self.mother.removeRelation()
-                self.mother = ParentChildRelation(self, mother)
+                self.mother = MotherChildRelation(self, mother)
             else:
                 raise ValueError("""The Biological Mother provided isn't female.  
                 If you want to set this anyway, chagne ignoreSex to True in settings.""")
@@ -63,7 +63,7 @@ class Person:
             if father.sex is Ids.MALE or Settings.ignoreSex:
                 if self.father is not None:
                     self.father.removeRelation()
-                self.father = ParentChildRelation(self, father)
+                self.father = FatherChildRelation(self, father)
             else:
                 raise ValueError("""The Biological Father provided isn't male.  
                 If you want to set this anyway, chagne ignoreSex to True in settings.""")
@@ -76,6 +76,8 @@ class Person:
         else:
             if self.partner is not None:
                 self.partner.removeRelation()
+            if partner.partner is not None:
+                partner.partner.removeRelation()
             self.partner = PartneredRelation(self, partner)
 
 

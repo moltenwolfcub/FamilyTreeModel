@@ -85,16 +85,16 @@ class Tile:
 		drawRect.height = sexLetterHeight
 		self.renderer.screen.blit(self.sexLetterImage, drawRect)
 
-	def drawRelations(self):
-		if (self.person.mother != None):
-			motherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.mother.getParent().id)
-			pygame.draw.line(self.renderer.screen, Settings.motherRelationColor, 
-				self.rect.center, motherTile.rect.center, Settings.relationLineThickness)
+	# def drawRelations(self):
+		# if (self.person.mother != None):
+		# 	motherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.mother.getParent().id)
+		# 	pygame.draw.line(self.renderer.screen, Settings.motherRelationColor, 
+		# 		self.rect.center, motherTile.rect.center, Settings.relationLineThickness)
 
-		if (self.person.father != None):
-			fatherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.father.getParent().id)
-			pygame.draw.line(self.renderer.screen, Settings.fatherRelationColor, 
-				self.rect.center, fatherTile.rect.center, Settings.relationLineThickness)
+		# if (self.person.father != None):
+		# 	fatherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.father.getParent().id)
+		# 	pygame.draw.line(self.renderer.screen, Settings.fatherRelationColor, 
+		# 		self.rect.center, fatherTile.rect.center, Settings.relationLineThickness)
 
 
 	def updateInfo(self):

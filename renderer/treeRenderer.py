@@ -1,12 +1,15 @@
-import sys, pygame
+import sys
+
+import pygame
 
 sys.path.append('../familyTreeModel')
 
-from utils.idMappings import Ids
 from personData.person import Person
 from renderer.personTile import Tile
-
+from utils.idMappings import Ids
+from utils.personTileMappings import Mappings
 from utils.settings import Settings
+
 
 class TreeRenderer:
     """A class responsible for rendering a family tree"""
@@ -29,22 +32,31 @@ class TreeRenderer:
 
 
         self.tmpPerson: Person = Person(0, "Testy", "McTest", Ids.MALE, "Test")
+        self.tmpTile: Tile = Tile(self, self.tmpPerson)
         self.tmpMother: Person = Person(1, "Tesa", "McTest", Ids.FEMALE)
+        self.tmpMotherTile: Tile = Tile(self, self.tmpMother)
         self.tmpFather: Person = Person(2, "Testo", "McTest", Ids.MALE)
+        self.tmpFatherTile: Tile = Tile(self, self.tmpFather)
+        self.tmpEx: Person = Person(3, "Tester", "O'Test-face", Ids.FEMALE)
+        self.tmpExTile: Tile = Tile(self, self.tmpEx)
 
         self.tmpPerson.setFather(self.tmpFather)
         self.tmpPerson.setMother(self.tmpMother)
+        self.tmpFather.setPartner(self.tmpEx)
+        self.tmpMother.setPartner(self.tmpFather)
 
-        self.tmpTile: Tile = Tile(self, self.tmpPerson)
-        self.tmpFatherTile: Tile = Tile(self, self.tmpFather)
-        self.tmpMotherTile: Tile = Tile(self, self.tmpMother)
+        print(self.tmpFather.partner)
+        print(self.tmpEx.partner)
+
 
         self.tmpTile.centre()
+        self.tmpExTile.centre()
         self.tmpMotherTile.centre()
         self.tmpFatherTile.centre()
         
 
         self.tiles.append(self.tmpTile)
+        self.tiles.append(self.tmpExTile)
         self.tiles.append(self.tmpMotherTile)
         self.tiles.append(self.tmpFatherTile)
 
@@ -90,8 +102,8 @@ class TreeRenderer:
     def update(self) -> None:
         self.screen.fill(Settings.backgroundColor)
 
-        for tile in self.tiles:
-            tile.drawRelations()
+        for relation in Mappings.relations:
+            relation.drawRelation(self.screen)
         for tile in self.tiles:
             tile.draw()
 

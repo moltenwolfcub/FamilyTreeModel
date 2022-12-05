@@ -1,4 +1,4 @@
-import sys
+import pygame, sys
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
@@ -7,9 +7,12 @@ if TYPE_CHECKING:
 	from personData.person import Person
 
 from utils.personTileMappings import Mappings
+from utils.settings import Settings
+
 
 class Relationship(ABC):
 	def __init__(self, person1Id: int, person2Id: int) -> None:
+		Mappings.addRelation(self)
 		self.person1: int = person1Id
 		self.person2: int = person2Id
 
@@ -35,6 +38,20 @@ class Relationship(ABC):
 	def contains(self, person: 'Person') -> bool:
 		return person.id == self.person1 or person.id == self.person2
 
+	def getRelationColor(self) -> tuple[int, int, int]:
+		if (self.getDefaultColor() is None):
+			return Settings.defaultRelationColor
+		else:
+			return self.getDefaultColor()
+
+	@abstractmethod
+	def getDefaultColor(self) -> tuple[int, int, int]:
+		pass
+
+	def drawRelation(self, screen: pygame.Surface) -> None:
+		pygame.draw.line(screen, self.getRelationColor(), Mappings.getTileFromPersonId(self.person1).rect.center, 
+			Mappings.getTileFromPersonId(self.person2).rect.center, Settings.relationLineThickness)
+
 class ParentChildRelation(Relationship):
 
 	def __init__(self, child: 'Person', parent: 'Person') -> None:
@@ -56,6 +73,23 @@ class ParentChildRelation(Relationship):
 	def getChild(self) -> 'Person':
 		return Mappings.getPersonFromId(self.person1)
 
+	def getDefaultColor(self) -> tuple[int, int, int]:
+		return super().getDefaultColor()
+
+class MotherChildRelation(ParentChildRelation):
+	def __init__(self, child: 'Person', mother: 'Person') -> None:
+		super().__init__(child, mother)
+
+	def getDefaultColor(self) -> tuple[int, int, int]:
+		return Settings.motherRelationColor
+
+class FatherChildRelation(ParentChildRelation):
+	def __init__(self, child: 'Person', father: 'Person') -> None:
+		super().__init__(child, father)
+
+	def getDefaultColor(self) -> tuple[int, int, int]:
+		return Settings.fatherRelationColor
+
 class PartneredRelation(Relationship):
 
 	def __init__(self, caller: 'Person', other: 'Person') -> None:
@@ -73,6 +107,9 @@ class PartneredRelation(Relationship):
 	def isAPartner(self, partner: 'Person') -> bool:
 		return partner == self.person1 or partner == self.person2
 
+	def getDefaultColor(self) -> tuple[int, int, int]:
+		return Settings.partnerRelationColor
+
 class ExPartnerRelation(Relationship):
 
 	def __init__(self, caller: 'Person', other: 'Person') -> None:
@@ -82,3 +119,6 @@ class ExPartnerRelation(Relationship):
 	def onRemove(self) -> None:
 		raise ValueError("""Shouldn't be removing an ex from a person. If they were together once, then they are
 			now ex together.""")
+
+	def getDefaultColor(self) -> tuple[int, int, int]:
+		return Settings.exPartnerRelationColor

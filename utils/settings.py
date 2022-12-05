@@ -27,8 +27,11 @@ class Settings:
     tileMaleColor:tuple[int,int,int] = (77, 115, 217)
     #relations
     relationLineThickness: int = 5
-    motherRelationColor:tuple[int,int] = (255, 0, 0)
-    fatherRelationColor:tuple[int,int] = (0, 255, 0)
+    defaultRelationColor: tuple[int, int, int] = (255, 255, 255)
+    motherRelationColor:tuple[int, int, int] = (255, 150, 255)
+    fatherRelationColor:tuple[int, int, int] = (100, 175, 255)
+    partnerRelationColor:tuple[int, int, int] = (155, 17, 30)
+    exPartnerRelationColor:tuple[int, int, int] = (90, 0, 13)
 
     #otherSettings
     #font

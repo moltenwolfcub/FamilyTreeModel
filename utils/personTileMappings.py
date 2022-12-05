@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from renderer.personTile import Tile
     from personData.person import Person
+    from personData.relationships import Relationship
 
 class Mappings:
     """A class to map tiles and people together"""
@@ -11,6 +12,7 @@ class Mappings:
     people: list['Person'] = []
     tiles: list['Tile'] = []
     ids: list[int] = []
+    relations: list['Relationship'] = []
 
     _Id2TileMapping: dict[int, 'Tile'] = dict()
     _tile2IdMapping: dict['Tile', int] = dict()
@@ -25,6 +27,9 @@ class Mappings:
         Mappings._Id2PersonMapping[person.id] = person
         Mappings.people.append(person)
         Mappings.ids.append(person.id)
+
+    def addRelation(relation: 'Relationship') -> None:
+        Mappings.relations.append(relation)
 
     def getPersonIdFromTile(tile: 'Tile') -> int:
         return Mappings._tile2IdMapping.get(tile)
