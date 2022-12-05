@@ -1,5 +1,5 @@
 import logging, sys
-from typing import Union, List
+from typing import Union, List, Callable
 
 sys.path.append('../familyTreeModel')
 
@@ -41,44 +41,41 @@ class Person:
 
 
     def setMother(self, mother: 'Person') -> None:
-        if mother is None:
-            if self.mother is not None:
-                self.mother.removeRelation()
-            self.mother = None
-        else:
-            if mother.sex is Ids.FEMALE or Settings.ignoreSex:
-                if self.mother is not None:
-                    self.mother.removeRelation()
-                self.mother = MotherChildRelation(self, mother)
-            else:
-                raise ValueError("""The Biological Mother provided isn't female.  
-                If you want to set this anyway, chagne ignoreSex to True in settings.""")
+        self.mother = self.setShip(mother, self.mother, lambda m: MotherChildRelation(self, m), 
+            None, lambda sex: sex == Ids.FEMALE)
 
     def setFather(self, father: 'Person') -> None:
-        if father is None:
-            if self.father is not None:
-                self.father.removeRelation()
-            self.father = None
-        else:
-            if father.sex is Ids.MALE or Settings.ignoreSex:
-                if self.father is not None:
-                    self.father.removeRelation()
-                self.father = FatherChildRelation(self, father)
-            else:
-                raise ValueError("""The Biological Father provided isn't male.  
-                If you want to set this anyway, chagne ignoreSex to True in settings.""")
+        self.father = self.setShip(father, self.father, lambda p: FatherChildRelation(self, p), 
+            None, lambda sex: sex == Ids.MALE)
 
     def setPartner(self, partner: 'Person') -> None:
-        if partner is None:
-            if self.partner is not None:
-                self.partner.removeRelation()
-            self.partner = None
+        self.partner = self.setShip(partner, self.partner, lambda p: PartneredRelation(self, p), 
+            partner.partner if partner is not None else None, lambda _: True)
+
+    def setShip(
+        self,
+        newPerson: 'Person',
+        currentShip: 'Relationship',
+        createNewShip: Callable[['Person'], 'Relationship'],
+        newPersonsOldShip: 'Relationship',
+        sexIsApplicable: Callable[[bool], bool],
+        ignoreSex: bool = Settings.ignoreSex,
+    ) -> Relationship:
+        if newPerson is None:
+            if currentShip is not None:
+                currentShip.removeRelation()
+            currentShip = None
         else:
-            if self.partner is not None:
-                self.partner.removeRelation()
-            if partner.partner is not None:
-                partner.partner.removeRelation()
-            self.partner = PartneredRelation(self, partner)
+            if sexIsApplicable(newPerson.sex) or ignoreSex:
+                if currentShip is not None:
+                    currentShip.removeRelation()
+                if newPersonsOldShip is not None:
+                    newPersonsOldShip.removeRelation()
+                currentShip = createNewShip(newPerson)
+            else:
+                raise ValueError("""The Person provided isn't the correct sex.  
+                If you want to set this anyway, chagne ignoreSex to True.""")
+        return currentShip
 
 
     def getDirectSiblings(self) -> set['Person']:
