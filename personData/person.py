@@ -1,5 +1,5 @@
 import logging, sys
-from typing import Union, List, Callable
+from typing import Union, List, Callable, Optional
 
 sys.path.append('../familyTreeModel')
 
@@ -17,13 +17,13 @@ class Person:
     def __init__(self, id: int, firstName: str, lastName: str, sex: bool, middleNames: Union[str,List[str]] = []) -> None:
         """Setup Instances of classes and data"""
 
-        self.id = id
-        self.firstName = firstName.strip().lower()
-        self.lastName = lastName.strip().lower()
+        self.id: int = id
+        self.firstName: str = firstName.strip().lower()
+        self.lastName: str = lastName.strip().lower()
 
         if isinstance(middleNames, str):
             middleNames = [middleNames]
-        self.middleNames = middleNames
+        self.middleNames: list[str] = middleNames
 
         self._sex = sex #biological sex stored as an 'isFemale' (True = f, False = m)
 
@@ -59,7 +59,7 @@ class Person:
         createNewShip: Callable[['Person'], 'Relationship'],
         newPersonsOldShip: 'Relationship',
         sexIsApplicable: Callable[[bool], bool],
-        ignoreSex: bool = Settings.ignoreSex,
+        ignoreSex: Optional[bool] = Settings.ignoreSex,
     ) -> Relationship:
         if newPerson is None:
             if currentShip is not None:
@@ -114,14 +114,14 @@ class Person:
         return sharedChilderen
     
     def getParentSiblings(self) -> set['Person']:
-        motherSiblings = set()
-        fatherSiblings = set()
+        motherSiblings: set['Person'] = set()
+        fatherSiblings: set['Person'] = set()
         if self.mother is not None:
             motherSiblings = self.mother.getParent().getAllSiblings()
         if self.father is not None:
             fatherSiblings = self.father.getParent().getAllSiblings()
 
-        allParentSiblings = motherSiblings.union(fatherSiblings)
+        allParentSiblings: set['Person'] = motherSiblings.union(fatherSiblings)
         return allParentSiblings
 
     def getAunts(self) -> set['Person']:
@@ -131,7 +131,7 @@ class Person:
         return flatMap(self.getParentSiblings(), lambda person: person if person.sex is Ids.MALE else None)
 
     def getCousins(self) -> set['Person']:
-        cousins = set()
+        cousins: set['Person'] = set()
         for parentSib in self.getParentSiblings():
             for childShip in parentSib.children:
                 child: 'Person' = childShip.getChild()
@@ -143,7 +143,10 @@ class Person:
         return self.exPartners
     
     def getAllPartners(self) -> set['Person']:
-        exs = self.exPartners
+        exShips: set['ExPartnerRelation'] = self.exPartners
+        exs: set['Person'] = set()
+        for ship in exShips:
+            exShips.add(ship.getOtherPerson(self))
         exs.add(self.partner)
         return exs
 
@@ -156,7 +159,7 @@ class Person:
     @property
     def fullName(self) -> str:
         """The person's full name"""
-        fullName = f"{self.firstName} "
+        fullName: str = f"{self.firstName} "
         for name in self.middleNames:
             fullName += f"{name} "
         fullName += self.lastName
@@ -165,5 +168,5 @@ class Person:
     @property
     def simpleName(self) -> str:
         """The person's first and last name formatted"""
-        fullName = f"{self.firstName} {self.lastName}"
+        fullName: str = f"{self.firstName} {self.lastName}"
         return fullName.title()

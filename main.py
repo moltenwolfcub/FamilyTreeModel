@@ -3,12 +3,12 @@ from utils.idMappings import Ids
 from personData.person import Person
 from utils.util import flatMap
 
-john = Person(0, "john", "smith", Ids.MALE)
-daisy = Person(1, "daisy", "smith", Ids.FEMALE)
-bob = Person(0, "bob", "smith", Ids.MALE)
-dylan = Person(0, "dylan", "smith", Ids.MALE)
-anne = Person(0, "anne", "smith", Ids.FEMALE)
-children = {john, bob, dylan, anne}
+john: Person = Person(0, "john", "smith", Ids.MALE)
+daisy: Person = Person(1, "daisy", "smith", Ids.FEMALE)
+bob: Person = Person(0, "bob", "smith", Ids.MALE)
+dylan: Person = Person(0, "dylan", "smith", Ids.MALE)
+anne: Person = Person(0, "anne", "smith", Ids.FEMALE)
+children: set[Person] = {john, bob, dylan, anne}
 
 # def addDaisyMother(child: Person):
 #     child.mother = daisy

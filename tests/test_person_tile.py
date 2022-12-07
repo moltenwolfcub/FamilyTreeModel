@@ -11,12 +11,12 @@ class personTests(unittest.TestCase):
     """Tests for Person class."""
 
     def setUp(self) -> None:
-        self.rendererInstance = TreeRenderer()
+        self.rendererInstance: TreeRenderer = TreeRenderer()
 
-        self.mainPerson = Person(0, "main", "mcTest", Ids.MALE)
+        self.mainPerson: Person = Person(0, "main", "mcTest", Ids.MALE)
         self.mainTile = Tile(self.rendererInstance, self.mainPerson)
 
-        self.mother = Person(1, "mother", "mcTest", Ids.FEMALE)
+        self.mother: Person = Person(1, "mother", "mcTest", Ids.FEMALE)
         self.motherTile = Tile(self.rendererInstance, self.mother)
         self.mainPerson.mother = self.mother
 

@@ -1,7 +1,7 @@
-from typing import Callable, TypeVar
+from typing import Callable, TypeVar, Sequence
 
 T = TypeVar('T')
-def flatMap(values: list, f: Callable[[T], T]) -> list:
+def flatMap(values: Sequence, f: Callable[[T], T]) -> list:
     returnlist: list[T] = []
     for i in values:
         x: T = f(i)

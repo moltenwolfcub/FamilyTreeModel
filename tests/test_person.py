@@ -8,14 +8,14 @@ class personTests(unittest.TestCase):
     """Tests for Person class."""
 
     def setUp(self) -> None:
-        self.person = Person(0, "testy", "mcTest", Ids.FEMALE)
-        self.mother = Person(1, "Mother", "mcTest", Ids.FEMALE)
-        self.father = Person(2, "Father", "mcTest", Ids.MALE)
-        self.sibling = Person(3, "Testa", "mcTest", Ids.MALE)
-        self.grandma = Person(6, "GrandTest", "mctest", Ids.FEMALE)
-        self.cousin = Person(11, "CousinTest", "mctest", Ids.MALE)
+        self.person: Person = Person(0, "testy", "mcTest", Ids.FEMALE)
+        self.mother: Person = Person(1, "Mother", "mcTest", Ids.FEMALE)
+        self.father: Person = Person(2, "Father", "mcTest", Ids.MALE)
+        self.sibling: Person = Person(3, "Testa", "mcTest", Ids.MALE)
+        self.grandma: Person = Person(6, "GrandTest", "mctest", Ids.FEMALE)
+        self.cousin: Person = Person(11, "CousinTest", "mctest", Ids.MALE)
 
-        self.partner = Person(4, "Testo", "testalon", Ids.MALE)
+        self.partner: Person = Person(4, "Testo", "testalon", Ids.MALE)
     
 
     def testId(self):
@@ -26,8 +26,8 @@ class personTests(unittest.TestCase):
         self.assertEqual(self.person.fullName, 'Testy Mctest')
 
     def testFullNameWithMiddle(self):
-        middleNames = ["kevin", "bob", "jones"]
-        person = Person(16, "john", "smith", Ids.MALE, middleNames)
+        middleNames: list[str] = ["kevin", "bob", "jones"]
+        person: Person = Person(16, "john", "smith", Ids.MALE, middleNames)
         self.assertEqual(person.fullName, 'John Kevin Bob Jones Smith')
 
     def testSimpleName(self):
@@ -35,7 +35,7 @@ class personTests(unittest.TestCase):
 
     def testSimpleNameWithMiddle(self):
         middleNames = ["kevin", "bob", "jones"]
-        person = Person(16, "john", "smith", Ids.MALE, middleNames)
+        person: Person = Person(16, "john", "smith", Ids.MALE, middleNames)
         self.assertEqual(person.simpleName, 'John Smith')
 
 
@@ -43,11 +43,11 @@ class personTests(unittest.TestCase):
         self.assertEqual(self.person.middleNames, [])
 
     def testEmptyMiddleNameString(self):
-        testPerson = Person(16, "john", "smith", Ids.MALE, "kevin")
+        testPerson: Person = Person(16, "john", "smith", Ids.MALE, "kevin")
         self.assertEqual(testPerson.middleNames, ['kevin'])
 
     def testMiddleName(self):
-        testPerson = Person(16, "john", "smith", Ids.MALE, ["kevin", "jones"])
+        testPerson: Person = Person(16, "john", "smith", Ids.MALE, ["kevin", "jones"])
         self.assertEqual(testPerson.middleNames, ['kevin', 'jones'])
 
     
@@ -63,7 +63,7 @@ class personTests(unittest.TestCase):
 
     def testMotherWillLoseChildOnReplace(self):
         self.person.setMother(self.mother)
-        mother = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
+        mother: Person = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
         self.person.setMother(mother)
 
         hasChild = False
@@ -87,7 +87,7 @@ class personTests(unittest.TestCase):
         self.assertFalse(hasChild)
 
     def testMotherSettingIncorrectSex(self):
-        mother = Person(15, "boyMother", "mcTest", Ids.MALE)
+        mother: Person = Person(15, "boyMother", "mcTest", Ids.MALE)
         if Settings.ignoreSex:
             self.assertTrue(True)
         else:
@@ -107,7 +107,7 @@ class personTests(unittest.TestCase):
 
     def testFatherWillLoseChildOnReplace(self):
         self.person.setFather(self.father)
-        father = Person(18, "Father", "mcTest", Ids.MALE, "beta")
+        father: Person = Person(18, "Father", "mcTest", Ids.MALE, "beta")
         self.person.father = father
 
         self.assertFalse(self.person in self.father.children)
@@ -119,7 +119,7 @@ class personTests(unittest.TestCase):
         self.assertFalse(self.person in self.father.children)
 
     def testFatherSettingIncorrectSex(self):
-        father = Person(15, "girlFather", "mcTest", Ids.FEMALE)
+        father: Person = Person(15, "girlFather", "mcTest", Ids.FEMALE)
         if Settings.ignoreSex:
             self.assertTrue(True)
         else:
@@ -141,7 +141,7 @@ class personTests(unittest.TestCase):
 
         self.sibling.setMother(self.mother)
         self.sibling.setFather(self.father)
-        sibling = Person(32, "OtherSibling", "mctest", Ids.FEMALE)
+        sibling: Person = Person(32, "OtherSibling", "mctest", Ids.FEMALE)
         sibling.setMother(self.mother)
         sibling.setFather(self.father)
 
@@ -172,10 +172,10 @@ class personTests(unittest.TestCase):
 
         self.sibling.setMother(self.mother)
 
-        sibling2 = Person(40, "siblingPerson", "mcTest", Ids.MALE, "beta")
+        sibling2: Person = Person(40, "siblingPerson", "mcTest", Ids.MALE, "beta")
         sibling2.setFather(self.father)
 
-        sibling3 = Person(42, "siblingPerson", "mcTest", Ids.FEMALE)
+        sibling3: Person = Person(42, "siblingPerson", "mcTest", Ids.FEMALE)
         sibling3.setFather(self.father)
         sibling3.setMother(self.mother)
 
@@ -198,7 +198,7 @@ class personTests(unittest.TestCase):
         self.assertEqual(self.partner.partner.getOtherPerson(self.partner), self.person)
     
     def testPartnerChange(self):
-        partner2 = Person(5, "John", "testFace", Ids.MALE)
+        partner2: Person = Person(5, "John", "testFace", Ids.MALE)
 
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
@@ -217,7 +217,7 @@ class personTests(unittest.TestCase):
         )
 
     def testPartnerChangeExAddition(self):
-        partner2 = Person(5, "John", "testFace", Ids.MALE)
+        partner2: Person = Person(5, "John", "testFace", Ids.MALE)
 
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
@@ -263,9 +263,9 @@ class personTests(unittest.TestCase):
         self.mother.setMother(self.grandma)
         self.sibling.setMother(self.grandma)
 
-        sibling2 = Person(7, "SiblingBro", "mcTest", Ids.MALE)
+        sibling2: Person = Person(7, "SiblingBro", "mcTest", Ids.MALE)
         sibling2.setMother(self.grandma)
-        sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
+        sibling3: Person = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling3.setMother(self.grandma)
 
         self.person.setMother(self.mother)
@@ -278,19 +278,19 @@ class personTests(unittest.TestCase):
         self.mother.setMother(self.grandma)
         self.sibling.setMother(self.grandma)
 
-        sibling2 = Person(7, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
+        sibling2: Person = Person(7, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
         sibling2.setMother(self.grandma)
-        sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
+        sibling3: Person = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling3.setMother(self.grandma)
 
         self.person.setMother(self.mother)
 
-        grandad = Person(89, "grandad", "mcTest2", Ids.MALE)
+        grandad: Person = Person(89, "grandad", "mcTest2", Ids.MALE)
         self.father.setFather(grandad)
 
-        sibling4 = Person(9, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
+        sibling4: Person = Person(9, "SiblingSis", "mcTest", Ids.FEMALE, "the second")
         sibling4.setFather(grandad)
-        sibling5 = Person(10, "SiblingSis", "mcTest", Ids.FEMALE)
+        sibling5: Person = Person(10, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling5.setFather(grandad)
 
         self.person.setFather(self.father)
@@ -305,19 +305,19 @@ class personTests(unittest.TestCase):
         self.mother.setMother(self.grandma)
         self.sibling.setMother(self.grandma)
 
-        sibling2 = Person(7, "SiblingBro", "mcTest", Ids.MALE)
+        sibling2: Person = Person(7, "SiblingBro", "mcTest", Ids.MALE)
         sibling2.setMother(self.grandma)
-        sibling3 = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
+        sibling3: Person = Person(8, "SiblingSis", "mcTest", Ids.FEMALE)
         sibling3.setMother(self.grandma)
 
         self.person.setMother(self.mother)
 
-        grandad = Person(89, "grandad", "mcTest2", Ids.MALE)
+        grandad: Person = Person(89, "grandad", "mcTest2", Ids.MALE)
         self.father.setFather(grandad)
 
-        sibling4 = Person(9, "SiblingSis", "mcTest", Ids.MALE, "the second")
+        sibling4: Person = Person(9, "SiblingSis", "mcTest", Ids.MALE, "the second")
         sibling4.setFather(grandad)
-        sibling5 = Person(10, "SiblingSis", "mcTest", Ids.MALE)
+        sibling5: Person = Person(10, "SiblingSis", "mcTest", Ids.MALE)
         sibling5.setFather(grandad)
 
         self.person.setFather(self.father)

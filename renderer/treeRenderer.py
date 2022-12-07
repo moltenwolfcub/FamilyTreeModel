@@ -19,8 +19,8 @@ class TreeRenderer:
 
         self.screen:pygame.Surface = pygame.display.set_mode((Settings.screenWidth, Settings.screenHeight), pygame.RESIZABLE)
         pygame.display.set_caption("Family Tree")
-        self.screenSize = pygame.display.get_window_size()
-        self.mouse_pos = pygame.mouse.get_pos()
+        self.screenSize: tuple[int, int] = pygame.display.get_window_size()
+        self.mouse_pos: tuple[int, int] = pygame.mouse.get_pos()
 
 
         self.mouseHasBeenDown: bool = False
@@ -76,7 +76,7 @@ class TreeRenderer:
             exit()
 
     def _mouseInput(self):
-        self.mouse_pos = pygame.mouse.get_pos()
+        self.mouse_pos: tuple[int, int] = pygame.mouse.get_pos()
 
         if pygame.mouse.get_pressed()[0]: #mouse left click
             if (self.mouseHasBeenDown): #check that mouse has just been pressed

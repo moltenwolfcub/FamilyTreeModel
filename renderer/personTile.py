@@ -14,9 +14,9 @@ if TYPE_CHECKING:
 class Tile:
 	def __init__(self, renderer: 'TreeRenderer', person: Person) -> None:
 		"""Setup assets and variables for a tile"""
-		self.nameFont = pygame.font.SysFont(Settings.fontFamily, Settings.fontNameSize)
-		self.smallNameFont = pygame.font.SysFont(Settings.fontFamily, Settings.fontSmallNameSize)
-		self.sexFont = pygame.font.SysFont(Settings.fontFamily, Settings.fontSexSize)
+		self.nameFont: pygame.font.Font = pygame.font.SysFont(Settings.fontFamily, Settings.fontNameSize)
+		self.smallNameFont: pygame.font.Font = pygame.font.SysFont(Settings.fontFamily, Settings.fontSmallNameSize)
+		self.sexFont: pygame.font.Font = pygame.font.SysFont(Settings.fontFamily, Settings.fontSexSize)
 
 		self.renderer: 'TreeRenderer' = renderer
 		self.person: Person = person
@@ -75,41 +75,29 @@ class Tile:
 		)
 		pygame.draw.rect(self.renderer.screen, self.sexColor, drawRect)
 
-		sexLetterWidth = self.sexLetterImage.get_width()
-		sexLetterHeight = self.sexLetterImage.get_height()
-		sexTextOffsetX = (Settings.tileSexSize - sexLetterWidth)/2
-		sexTextOffsetY = (Settings.tileSexSize - sexLetterHeight)/2
+		sexLetterWidth: int = self.sexLetterImage.get_width()
+		sexLetterHeight: int = self.sexLetterImage.get_height()
+		sexTextOffsetX: float = (Settings.tileSexSize - sexLetterWidth)/2
+		sexTextOffsetY: float = (Settings.tileSexSize - sexLetterHeight)/2
 		drawRect.x += sexTextOffsetX
 		drawRect.y += sexTextOffsetY
 		drawRect.width = sexLetterWidth
 		drawRect.height = sexLetterHeight
 		self.renderer.screen.blit(self.sexLetterImage, drawRect)
 
-	# def drawRelations(self):
-		# if (self.person.mother != None):
-		# 	motherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.mother.getParent().id)
-		# 	pygame.draw.line(self.renderer.screen, Settings.motherRelationColor, 
-		# 		self.rect.center, motherTile.rect.center, Settings.relationLineThickness)
-
-		# if (self.person.father != None):
-		# 	fatherTile: 'Tile' = Mappings.getTileFromPersonId(self.person.father.getParent().id)
-		# 	pygame.draw.line(self.renderer.screen, Settings.fatherRelationColor, 
-		# 		self.rect.center, fatherTile.rect.center, Settings.relationLineThickness)
-
-
 	def updateInfo(self):
 		"""Update drawable objects based on self.person data"""
 		name: str = self.person.simpleName
-		self.nameImage = self.nameFont.render(name, True, Settings.tileFontColor, None)
-		self.nameRect = self.nameImage.get_rect()
+		self.nameImage: pygame.Surface = self.nameFont.render(name, True, Settings.tileFontColor, None)
+		self.nameRect: pygame.Rect = self.nameImage.get_rect()
 
 		fullName: str = self.person.fullName
-		self.fullnameImage = self.smallNameFont.render(fullName, True, Settings.tileSmallNameFontColor, None)
-		self.fullnameRect = self.fullnameImage.get_rect()
+		self.fullnameImage: pygame.Surface = self.smallNameFont.render(fullName, True, Settings.tileSmallNameFontColor, None)
+		self.fullnameRect: pygame.Rect = self.fullnameImage.get_rect()
 
 		id: str = self.person.id
-		self.idImage = self.smallNameFont.render(str(id), True, Settings.tileSmallNameFontColor, None)
-		self.idRect = self.idImage.get_rect()
+		self.idImage: pygame.Surface = self.smallNameFont.render(str(id), True, Settings.tileSmallNameFontColor, None)
+		self.idRect: pygame.Rect = self.idImage.get_rect()
 
 		if self.person.sex is Ids.FEMALE:
 			self.sexColor: int = Settings.tileFemaleColor
@@ -120,7 +108,7 @@ class Tile:
 			sexLetter: str = "M"
 		else:
 			raise ValueError("This tile's person doesn't have a proper sex")
-		self.sexLetterImage = self.sexFont.render(sexLetter, True, Settings.tileFontColor, None)
+		self.sexLetterImage: pygame.Surface = self.sexFont.render(sexLetter, True, Settings.tileFontColor, None)
 
 		self.updateDrawPos()
 
@@ -140,9 +128,9 @@ class Tile:
 		self.rect.center = self.renderer.screen.get_rect().center
 
 	def setLockedToMouse(self, isLocked: bool, xOffset: int, yOffset: int):
-		self.locked = isLocked
+		self.locked: bool = isLocked
 		if isLocked:
-			self.lockedX = xOffset
-			self.lockedY = yOffset
+			self.lockedX: int = xOffset
+			self.lockedY: int = yOffset
 		else:
 			self.lockedX, self.lockedY = 0, 0
