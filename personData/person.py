@@ -40,17 +40,20 @@ class Person:
         return f"Person <name: {self.fullName}, id: {self.id}, sex: {Ids.convertSexBool(self.sex)}>"
 
 
-    def setMother(self, mother: 'Person') -> None:
+    def setMother(self, mother: 'Person') -> 'Person':
         self.mother = self.setShip(mother, self.mother, lambda m: MotherChildRelation(self, m), 
             None, lambda sex: sex == Ids.FEMALE)
+        return self
 
-    def setFather(self, father: 'Person') -> None:
+    def setFather(self, father: 'Person') -> 'Person':
         self.father = self.setShip(father, self.father, lambda p: FatherChildRelation(self, p), 
             None, lambda sex: sex == Ids.MALE)
+        return self
 
-    def setPartner(self, partner: 'Person') -> None:
+    def setPartner(self, partner: 'Person') -> 'Person':
         self.partner = self.setShip(partner, self.partner, lambda p: PartneredRelation(self, p), 
             partner.partner if partner is not None else None, lambda _: True)
+        return self
 
     def setShip(
         self,

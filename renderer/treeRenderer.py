@@ -28,37 +28,15 @@ class TreeRenderer:
         self.initializeTiles()
 
     def initializeTiles(self) -> None:
-        self.tiles: list[Tile] = []
+        test = Person(Ids.getNextFreePersonId(Mappings.people), "Test", "Something", Ids.FEMALE)
+        test2 = Person(Ids.getNextFreePersonId(Mappings.people), "Test2", "Something", Ids.MALE)
+        test3 = Person(Ids.getNextFreePersonId(Mappings.people), "Test3", "Something", Ids.FEMALE)
 
+        test3.setMother(test).setFather(test2)
+        test.setPartner(test2)
 
-        self.tmpPerson: Person = Person(0, "Testy", "McTest", Ids.MALE, "Test")
-        self.tmpTile: Tile = Tile(self, self.tmpPerson)
-        self.tmpMother: Person = Person(1, "Tesa", "McTest", Ids.FEMALE)
-        self.tmpMotherTile: Tile = Tile(self, self.tmpMother)
-        self.tmpFather: Person = Person(2, "Testo", "McTest", Ids.MALE)
-        self.tmpFatherTile: Tile = Tile(self, self.tmpFather)
-        self.tmpEx: Person = Person(3, "Tester", "O'Test-face", Ids.FEMALE)
-        self.tmpExTile: Tile = Tile(self, self.tmpEx)
-
-        self.tmpPerson.setFather(self.tmpFather)
-        self.tmpPerson.setMother(self.tmpMother)
-        self.tmpFather.setPartner(self.tmpEx)
-        self.tmpMother.setPartner(self.tmpFather)
-
-        print(self.tmpFather.partner)
-        print(self.tmpEx.partner)
-
-
-        self.tmpTile.centre()
-        self.tmpExTile.centre()
-        self.tmpMotherTile.centre()
-        self.tmpFatherTile.centre()
-        
-
-        self.tiles.append(self.tmpTile)
-        self.tiles.append(self.tmpExTile)
-        self.tiles.append(self.tmpMotherTile)
-        self.tiles.append(self.tmpFatherTile)
+        for person in Mappings.people:
+            Tile(self, person)
 
 
 
@@ -84,18 +62,18 @@ class TreeRenderer:
             self.mouseHasBeenDown: bool = True
 
             
-            for tile in reversed(self.tiles):
+            for tile in reversed(Mappings.tiles):
 
                 if (tile.rect.collidepoint(self.mouse_pos)):
                     tile.setLockedToMouse(True, self.mouse_pos[0]-tile.rect.x, self.mouse_pos[1]-tile.rect.y) #lock to mouse
-                    self.tiles.remove(tile)
-                    self.tiles.append(tile) #move to top of being drawn
+                    Mappings.tiles.remove(tile)
+                    Mappings.tiles.append(tile) #move to top of being drawn
                     break
 
         else:
             if (self.mouseHasBeenDown == True): #checks if mouse has just been released
                 self.mouseHasBeenDown: bool = False
-                for tile in self.tiles:
+                for tile in Mappings.tiles:
                     tile.setLockedToMouse(False, 0, 0)
 
 
@@ -104,7 +82,7 @@ class TreeRenderer:
 
         for relation in Mappings.relations:
             relation.drawRelation(self.screen)
-        for tile in self.tiles:
+        for tile in Mappings.tiles:
             tile.draw()
 
         self.screenSize = pygame.display.get_window_size()

@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 sys.path.append('../familyTreeModel')
 
 from typing import TYPE_CHECKING
@@ -28,6 +28,7 @@ class Tile:
 
 		Mappings.addTile(self.person, self)
 
+		self.randomPos()
 		self.updateInfo()
 
 
@@ -126,6 +127,10 @@ class Tile:
 	def centre(self):
 		"""Centre the tile"""
 		self.rect.center = self.renderer.screen.get_rect().center
+
+	def randomPos(self):
+		"""Put the tile at a random position on the screen"""
+		self.rect.center = (random.randint(0, self.renderer.screen.get_width()), random.randint(0, self.renderer.screen.get_height()))
 
 	def setLockedToMouse(self, isLocked: bool, xOffset: int, yOffset: int):
 		self.locked: bool = isLocked
