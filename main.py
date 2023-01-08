@@ -2,6 +2,7 @@
 from utils.idMappings import Ids
 from personData.person import Person
 from utils.util import flatMap
+import utils.jsonManipulation as jm
 
 john: Person = Person(0, "john", "smith", Ids.MALE)
 daisy: Person = Person(1, "daisy", "smith", Ids.FEMALE)
@@ -34,3 +35,5 @@ for partner in john.exPartners:
 print("\n")
 for partner in daisy.exPartners:
     print(partner)
+
+print(jm.addPerson(jm.addPerson([], john), daisy))
