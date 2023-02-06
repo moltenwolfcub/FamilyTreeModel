@@ -1,6 +1,7 @@
 import pygame, sys
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
+from enum import Enum
 
 sys.path.append('../familyTreeModel')
 if TYPE_CHECKING:
@@ -10,11 +11,18 @@ from utils.personTileMappings import Mappings
 from utils.settings import Settings
 
 
+class LineDrawType(Enum):
+	STRAIGHT = 0
+	VERTICAL = 1
+	HORIZONTAL = 2
+
 class Relationship(ABC):
-	def __init__(self, person1Id: int, person2Id: int) -> None:
+	def __init__(self, person1Id: int, person2Id: int, lineType: LineDrawType = LineDrawType.STRAIGHT) -> None:
 		Mappings.addRelation(self)
 		self.person1: int = person1Id
 		self.person2: int = person2Id
+
+		self.lineType: LineDrawType = lineType
 
 	def __str__(self) -> str:
 		return f"A relationship between {Mappings.getPersonFromId(self.person1)} and {Mappings.getPersonFromId(self.person2)}."
@@ -49,13 +57,36 @@ class Relationship(ABC):
 		pass
 
 	def drawRelation(self, screen: pygame.Surface) -> None:
-		pygame.draw.line(screen, self.getRelationColor(), Mappings.getTileFromPersonId(self.person1).rect.center, 
-			Mappings.getTileFromPersonId(self.person2).rect.center, Settings.relationLineThickness)
+		person1Rect: pygame.Rect = Mappings.getTileFromPersonId(self.person1).rect
+		person2Rect: pygame.Rect = Mappings.getTileFromPersonId(self.person2).rect
+
+		match self.lineType:
+			case LineDrawType.VERTICAL:
+				higher, lower = (person1Rect, person2Rect) if person1Rect.y < person2Rect.y else (person2Rect, person1Rect)
+
+				heightDiff = lower.top - higher.bottom
+
+				pygame.draw.line(screen, self.getRelationColor(), (higher.centerx, higher.bottom), (higher.centerx, higher.bottom+heightDiff//2), Settings.relationLineThickness)
+				pygame.draw.line(screen, self.getRelationColor(), (higher.centerx, higher.bottom+heightDiff//2), (lower.centerx, higher.bottom+heightDiff//2), Settings.relationLineThickness)
+				pygame.draw.line(screen, self.getRelationColor(), (lower.centerx, higher.bottom+heightDiff//2), (lower.centerx, lower.top), Settings.relationLineThickness)
+
+			case LineDrawType.HORIZONTAL:
+				left, right = (person1Rect, person2Rect) if person1Rect.x < person2Rect.x else (person2Rect, person1Rect)
+
+				widthDiff = right.left - left.right
+
+				pygame.draw.line(screen, self.getRelationColor(), (left.right, left.centery), (left.right+widthDiff//2, left.centery), Settings.relationLineThickness)
+				pygame.draw.line(screen, self.getRelationColor(), (left.right+widthDiff//2, left.centery), (left.right+widthDiff//2, right.centery), Settings.relationLineThickness)
+				pygame.draw.line(screen, self.getRelationColor(), (left.right+widthDiff//2, right.centery), (right.left, right.centery), Settings.relationLineThickness)
+			
+			case LineDrawType.STRAIGHT:
+				pygame.draw.line(screen, self.getRelationColor(), person1Rect.center, person2Rect.center, Settings.relationLineThickness)
+				
 
 class ParentChildRelation(Relationship):
 
 	def __init__(self, child: 'Person', parent: 'Person') -> None:
-		super().__init__(child.id, parent.id)
+		super().__init__(child.id, parent.id, LineDrawType.VERTICAL)
 		parent.children.add(self)
 
 	def onRemove(self) -> None:
@@ -93,7 +124,7 @@ class FatherChildRelation(ParentChildRelation):
 class PartneredRelation(Relationship):
 
 	def __init__(self, caller: 'Person', other: 'Person') -> None:
-		super().__init__(caller.id, other.id)
+		super().__init__(caller.id, other.id, LineDrawType.HORIZONTAL)
 		other.partner = self
 
 	def onRemove(self) -> None:
@@ -113,7 +144,7 @@ class PartneredRelation(Relationship):
 class ExPartnerRelation(Relationship):
 
 	def __init__(self, caller: 'Person', other: 'Person') -> None:
-		super().__init__(caller.id, other.id)
+		super().__init__(caller.id, other.id, LineDrawType.HORIZONTAL)
 		# other.partner = self
 
 	def onRemove(self) -> None:
