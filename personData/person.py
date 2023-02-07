@@ -27,7 +27,7 @@ class Person:
 
         self._sex = sex #biological sex stored as an 'isFemale' (True = f, False = m)
 
-        self.partner: PartneredRelation = None
+        self.partners: set[PartneredRelation] = set()
         self.exPartners: set[ExPartnerRelation] = set()
 
         self.mother: MotherChildRelation = None
@@ -51,8 +51,15 @@ class Person:
         return self
 
     def setPartner(self, partner: 'Person') -> 'Person':
-        self.partner = self.setShip(partner, self.partner, lambda p: PartneredRelation(self, p), 
-            partner.partner if partner is not None else None, lambda _: True)
+        if (not Settings.allowPolyShips or partner is None):
+            toRemove: list[PartneredRelation] = []
+            for oldShip in self.partners:
+                toRemove.append(oldShip)
+            for remove in toRemove:
+                remove.removeRelation()
+        if partner is not None:
+            self.partners.add(PartneredRelation(self, partner))
+
         return self
 
     def setShip(
@@ -150,7 +157,7 @@ class Person:
         exs: set['Person'] = set()
         for ship in exShips:
             exShips.add(ship.getOtherPerson(self))
-        exs.add(self.partner)
+        exs.add(self.partners)
         return exs
 
 

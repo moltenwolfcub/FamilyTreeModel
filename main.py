@@ -27,8 +27,8 @@ children: set[Person] = {john, bob, dylan, anne}
 # for i in flatMap(john.getAllSiblings(), (lambda person: person if person.sex is ids.MALE else None)):
 #     print(i)
 
-john.partner = daisy
-john.partner = None
+john.partners = daisy
+john.partners = None
 
 for partner in john.exPartners:
     print(partner)

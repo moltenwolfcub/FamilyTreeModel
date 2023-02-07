@@ -2,6 +2,8 @@
 class Settings:
     #ignore the biological sex of the person you are setting as your biological parent
     ignoreSex: bool = False
+    #allow people to be in a relationship with more than one person at a time
+    allowPolyShips: bool = True
 
     #settings for rendering
     #bg

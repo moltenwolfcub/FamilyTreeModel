@@ -31,9 +31,11 @@ class TreeRenderer:
         test = Person(Ids.getNextFreePersonId(Mappings.people), "Test", "Something", Ids.FEMALE)
         test2 = Person(Ids.getNextFreePersonId(Mappings.people), "Test2", "Something", Ids.MALE)
         test3 = Person(Ids.getNextFreePersonId(Mappings.people), "Test3", "Something", Ids.FEMALE)
+        test4 = Person(Ids.getNextFreePersonId(Mappings.people), "Test4", "Something", Ids.FEMALE)
 
         test3.setMother(test).setFather(test2)
         test.setPartner(test2)
+        test.setPartner(test4)
 
         for person in Mappings.people:
             Tile(self, person)

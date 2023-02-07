@@ -125,11 +125,11 @@ class PartneredRelation(Relationship):
 
 	def __init__(self, caller: 'Person', other: 'Person') -> None:
 		super().__init__(caller.id, other.id, LineDrawType.HORIZONTAL)
-		other.partner = self
+		other.partners.add(self)
 
 	def onRemove(self) -> None:
-		Mappings.getPersonFromId(self.person2).partner = None
-		Mappings.getPersonFromId(self.person1).partner = None
+		Mappings.getPersonFromId(self.person2).partners.remove(self)
+		Mappings.getPersonFromId(self.person1).partners.remove(self)
 
 		exShip = ExPartnerRelation(Mappings.getPersonFromId(self.person1), Mappings.getPersonFromId(self.person2))
 		Mappings.getPersonFromId(self.person1).exPartners.add(exShip)
