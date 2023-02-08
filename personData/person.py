@@ -51,14 +51,21 @@ class Person:
         return self
 
     def setPartner(self, partner: 'Person') -> 'Person':
-        if (not Settings.allowPolyShips or partner is None):
-            toRemove: list[PartneredRelation] = []
-            for oldShip in self.partners:
-                toRemove.append(oldShip)
+        toRemove: list[ExPartnerRelation] = []
+        for oldShip in self.exPartners:
+            toRemove.append(oldShip)
+        if (len(toRemove)>0):
             for remove in toRemove:
                 remove.removeRelation()
-        if partner is not None:
-            self.partners.add(PartneredRelation(self, partner))
+        else:
+            if (not Settings.allowPolyShips or partner is None):
+                toRemove: list[PartneredRelation] = []
+                for oldShip in self.partners:
+                    toRemove.append(oldShip)
+                for remove in toRemove:
+                    remove.removeRelation()
+            if partner is not None:
+                self.partners.add(PartneredRelation(self, partner))
 
         return self
 

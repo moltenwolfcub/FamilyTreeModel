@@ -249,6 +249,15 @@ class personTests(unittest.TestCase):
                 hasEx = True
         self.assertTrue(hasEx)
 
+    def testExRemoval(self):
+        Settings.allowPolyShips = False
+        self.person.setPartner(self.partner)
+        self.person.setPartner(None)
+        self.person.setPartner(self.partner)
+
+        self.assertTrue(any(ship.getOtherPerson(self.person) is not self.partner for ship in self.person.exPartners) or len(self.person.exPartners) < 1)
+        self.assertTrue(any(ship.getOtherPerson(self.partner) is not self.person for ship in self.partner.exPartners) or len(self.partner.exPartners) < 1)
+
     def testPolyPartners(self):
         Settings.allowPolyShips = True
         partner2: Person = Person(5, "John", "testFace", Ids.MALE)

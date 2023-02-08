@@ -145,11 +145,15 @@ class ExPartnerRelation(Relationship):
 
 	def __init__(self, caller: 'Person', other: 'Person') -> None:
 		super().__init__(caller.id, other.id, LineDrawType.HORIZONTAL)
-		# other.partner = self
 
 	def onRemove(self) -> None:
-		raise ValueError("""Shouldn't be removing an ex from a person. If they were together once, then they are
-			now ex together.""")
+		# assuming that if they are no longer an ex then they got back together
+		Mappings.getPersonFromId(self.person2).exPartners.remove(self)
+		Mappings.getPersonFromId(self.person1).exPartners.remove(self)
+
+		newShip = PartneredRelation(Mappings.getPersonFromId(self.person1), Mappings.getPersonFromId(self.person2))
+		Mappings.getPersonFromId(self.person1).partners.add(newShip)
+		Mappings.getPersonFromId(self.person2).partners.add(newShip)
 
 	def getDefaultColor(self) -> tuple[int, int, int]:
 		return Settings.exPartnerRelationColor
