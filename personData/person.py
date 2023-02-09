@@ -7,7 +7,6 @@ from personData.relationships import *
 from utils.idMappings import Ids
 from utils.settings import Settings
 from utils.personTileMappings import Mappings
-from utils.util import flatMap
 
 # logger = logging.getLogger(__name__)
 
@@ -51,19 +50,15 @@ class Person:
         return self
 
     def setPartner(self, partner: 'Person') -> 'Person':
-        toRemove: list[ExPartnerRelation] = []
-        for oldShip in self.exPartners:
-            toRemove.append(oldShip)
-        if (len(toRemove)>0):
-            for remove in toRemove:
-                remove.removeRelation()
+        if partner is self:
+            raise ValueError("""Can't set yourself as your own partner!""")
+
+        exExs = [ex for ex in self.exPartners if ex.getOtherPerson(self) is partner]
+        if (len(exExs)>0):
+            [remove.removeRelation() for remove in list(self.exPartners)]
         else:
             if (not Settings.allowPolyShips or partner is None):
-                toRemove: list[PartneredRelation] = []
-                for oldShip in self.partners:
-                    toRemove.append(oldShip)
-                for remove in toRemove:
-                    remove.removeRelation()
+                [remove.removeRelation() for remove in list(self.partners)]
             if partner is not None:
                 self.partners.add(PartneredRelation(self, partner))
 
@@ -142,10 +137,10 @@ class Person:
         return allParentSiblings
 
     def getAunts(self) -> set['Person']:
-        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is Ids.FEMALE else None)
+        return filter(lambda person: person if person.sex is Ids.FEMALE else None, self.getParentSiblings())
 
     def getUncles(self) -> set['Person']:
-        return flatMap(self.getParentSiblings(), lambda person: person if person.sex is Ids.MALE else None)
+        return filter(lambda person: person if person.sex is Ids.MALE else None, self.getParentSiblings())
 
     def getCousins(self) -> set['Person']:
         cousins: set['Person'] = set()

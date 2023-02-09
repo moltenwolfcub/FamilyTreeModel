@@ -1,7 +1,6 @@
 
 from utils.idMappings import Ids
 from personData.person import Person
-from utils.util import flatMap
 import utils.jsonManipulation as jm
 
 john: Person = Person(0, "john", "smith", Ids.MALE)

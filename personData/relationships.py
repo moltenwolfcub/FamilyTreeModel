@@ -47,10 +47,7 @@ class Relationship(ABC):
 		return person.id == self.person1 or person.id == self.person2
 
 	def getRelationColor(self) -> tuple[int, int, int]:
-		if (self.getDefaultColor() is None):
-			return Settings.defaultRelationColor
-		else:
-			return self.getDefaultColor()
+		return self.getDefaultColor() or Settings.defaultRelationColor
 
 	@abstractmethod
 	def getDefaultColor(self) -> tuple[int, int, int]:
@@ -60,27 +57,33 @@ class Relationship(ABC):
 		person1Rect: pygame.Rect = Mappings.getTileFromPersonId(self.person1).rect
 		person2Rect: pygame.Rect = Mappings.getTileFromPersonId(self.person2).rect
 
+		color = self.getRelationColor()
+
+		def drawVerticalLines():
+			higher, lower = (person1Rect, person2Rect) if person1Rect.y < person2Rect.y else (person2Rect, person1Rect)
+
+			heightDiff = lower.top - higher.bottom
+
+			pygame.draw.line(screen, color, (higher.centerx, higher.bottom), (higher.centerx, higher.bottom+heightDiff//2), Settings.relationLineThickness)
+			pygame.draw.line(screen, color, (higher.centerx, higher.bottom+heightDiff//2), (lower.centerx, higher.bottom+heightDiff//2), Settings.relationLineThickness)
+			pygame.draw.line(screen, color, (lower.centerx, higher.bottom+heightDiff//2), (lower.centerx, lower.top), Settings.relationLineThickness)
+
+		def drawHorizontalLines():
+			left, right = (person1Rect, person2Rect) if person1Rect.x < person2Rect.x else (person2Rect, person1Rect)
+
+			widthDiff = right.left - left.right
+
+			pygame.draw.line(screen, color, (left.right, left.centery), (left.right+widthDiff//2, left.centery), Settings.relationLineThickness)
+			pygame.draw.line(screen, color, (left.right+widthDiff//2, left.centery), (left.right+widthDiff//2, right.centery), Settings.relationLineThickness)
+			pygame.draw.line(screen, color, (left.right+widthDiff//2, right.centery), (right.left, right.centery), Settings.relationLineThickness)
+
 		match self.lineType:
 			case LineDrawType.VERTICAL:
-				higher, lower = (person1Rect, person2Rect) if person1Rect.y < person2Rect.y else (person2Rect, person1Rect)
-
-				heightDiff = lower.top - higher.bottom
-
-				pygame.draw.line(screen, self.getRelationColor(), (higher.centerx, higher.bottom), (higher.centerx, higher.bottom+heightDiff//2), Settings.relationLineThickness)
-				pygame.draw.line(screen, self.getRelationColor(), (higher.centerx, higher.bottom+heightDiff//2), (lower.centerx, higher.bottom+heightDiff//2), Settings.relationLineThickness)
-				pygame.draw.line(screen, self.getRelationColor(), (lower.centerx, higher.bottom+heightDiff//2), (lower.centerx, lower.top), Settings.relationLineThickness)
-
+				drawVerticalLines()
 			case LineDrawType.HORIZONTAL:
-				left, right = (person1Rect, person2Rect) if person1Rect.x < person2Rect.x else (person2Rect, person1Rect)
-
-				widthDiff = right.left - left.right
-
-				pygame.draw.line(screen, self.getRelationColor(), (left.right, left.centery), (left.right+widthDiff//2, left.centery), Settings.relationLineThickness)
-				pygame.draw.line(screen, self.getRelationColor(), (left.right+widthDiff//2, left.centery), (left.right+widthDiff//2, right.centery), Settings.relationLineThickness)
-				pygame.draw.line(screen, self.getRelationColor(), (left.right+widthDiff//2, right.centery), (right.left, right.centery), Settings.relationLineThickness)
-			
+				drawHorizontalLines()
 			case LineDrawType.STRAIGHT:
-				pygame.draw.line(screen, self.getRelationColor(), person1Rect.center, person2Rect.center, Settings.relationLineThickness)
+				pygame.draw.line(screen, color, person1Rect.center, person2Rect.center, Settings.relationLineThickness)
 				
 
 class ParentChildRelation(Relationship):

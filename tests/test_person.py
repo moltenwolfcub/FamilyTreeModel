@@ -53,78 +53,54 @@ class personTests(unittest.TestCase):
     
     def testMotherHasChild(self):
         self.person.setMother(self.mother)
-        hasChild = False
 
-        for ship in self.mother.children:
-            if (ship.isChild(self.person)):
-                hasChild = True
-
-        self.assertTrue(hasChild)
+        self.assertTrue(any(ship.isChild(self.person) for ship in self.mother.children))
 
     def testMotherWillLoseChildOnReplace(self):
         self.person.setMother(self.mother)
-        mother: Person = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
+        mother = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
         self.person.setMother(mother)
 
-        hasChild = False
+        self.assertFalse(self.person in self.mother.children)
 
-        for ship in self.mother.children:
-            if (ship.isChild(self.person)):
-                hasChild = True
-
-        self.assertFalse(hasChild)
 
     def testMotherRemoval(self):
         self.person.setMother(self.mother)
         self.person.setMother(None)
 
-        hasChild = False
+        self.assertFalse(self.person in self.mother.children)
 
-        for ship in self.mother.children:
-            if (ship.isChild(self.person)):
-                hasChild = True
-
-        self.assertFalse(hasChild)
 
     def testMotherSettingIncorrectSex(self):
+        Settings.ignoreSex = False
         mother: Person = Person(15, "boyMother", "mcTest", Ids.MALE)
-        if Settings.ignoreSex:
-            self.assertTrue(True)
-        else:
-            with self.assertRaises(ValueError):
-                self.person.setMother(mother)
+        with self.assertRaises(ValueError):
+            self.person.setMother(mother)
 
 
     def testFatherHasChild(self):
         self.person.setFather(self.father)
 
-        hasChild = False
-        for ship in self.father.children:
-            if (ship.isChild(self.person)):
-                hasChild = True
-
-        self.assertTrue(hasChild)
+        self.assertTrue(any(ship.isChild(self.person) for ship in self.father.children))
 
     def testFatherWillLoseChildOnReplace(self):
         self.person.setFather(self.father)
         father: Person = Person(18, "Father", "mcTest", Ids.MALE, "beta")
-        self.person.father = father
+        self.person.setFather(father)
 
         self.assertFalse(self.person in self.father.children)
 
     def testFatherRemoval(self):
         self.person.setFather(self.father)
-        self.person.father = None
+        self.person.setFather(None)
 
         self.assertFalse(self.person in self.father.children)
 
     def testFatherSettingIncorrectSex(self):
+        Settings.ignoreSex = False
         father: Person = Person(15, "girlFather", "mcTest", Ids.FEMALE)
-        if Settings.ignoreSex:
-            self.assertTrue(True)
-        else:
-            with self.assertRaises(ValueError):
-                self.person.setFather(father)
+        with self.assertRaises(ValueError):
+            self.person.setFather(father)
     
 
     def testOneSiblings(self):
@@ -203,7 +179,6 @@ class personTests(unittest.TestCase):
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
 
-
         self.assertTrue(any(ship.getOtherPerson(self.person) == partner2 for ship in self.person.partners))
         self.assertEqual(len(self.partner.partners), 0)
         self.assertTrue(any(ship.getOtherPerson(partner2) == self.person for ship in partner2.partners))
@@ -214,6 +189,10 @@ class personTests(unittest.TestCase):
 
         self.assertTrue(not self.person.partners and not self.partner.partners)
 
+    def testPartnerSelf(self):
+        with self.assertRaises(ValueError):
+            self.person.setPartner(self.person)
+
     def testPartnerChangeExAddition(self):
         Settings.allowPolyShips = False
         partner2: Person = Person(5, "John", "testFace", Ids.MALE)
@@ -221,33 +200,28 @@ class personTests(unittest.TestCase):
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
 
-        hasEx = False
-        for ship in self.person.exPartners:
-            if (ship.contains(self.partner)):
-                hasEx = True
-        self.assertTrue(hasEx)
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
 
-        hasEx = False
-        for ship in self.partner.exPartners:
-            if (ship.contains(self.person)):
-                hasEx = True
-        self.assertTrue(hasEx)
+    def testMultipleExs(self):
+        Settings.allowPolyShips = False
+        partner2: Person = Person(5, "Partner2", "testFace", Ids.MALE)
+
+        self.person.setPartner(self.partner)
+        self.person.setPartner(partner2)
+        self.person.setPartner(None)
+
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
+        self.assertTrue(any(ship.contains(partner2) for ship in self.person.exPartners))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
+        self.assertTrue(any(ship.contains(self.person) for ship in partner2.exPartners))
 
     def testPartnerRemovalExCreation(self):
         self.person.setPartner(self.partner)
         self.person.setPartner(None)
 
-        hasEx = False
-        for ship in self.person.exPartners:
-            if (ship.contains(self.partner)):
-                hasEx = True
-        self.assertTrue(hasEx)
-
-        hasEx = False
-        for ship in self.partner.exPartners:
-            if (ship.contains(self.person)):
-                hasEx = True
-        self.assertTrue(hasEx)
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
 
     def testExRemoval(self):
         Settings.allowPolyShips = False
@@ -257,6 +231,18 @@ class personTests(unittest.TestCase):
 
         self.assertTrue(any(ship.getOtherPerson(self.person) is not self.partner for ship in self.person.exPartners) or len(self.person.exPartners) < 1)
         self.assertTrue(any(ship.getOtherPerson(self.partner) is not self.person for ship in self.partner.exPartners) or len(self.partner.exPartners) < 1)
+
+    def testExAndNewRetainment(self):
+        Settings.allowPolyShips = False
+        partner2: Person = Person(5, "Partner2", "testFace", Ids.MALE)
+
+        self.person.setPartner(self.partner)
+        self.person.setPartner(partner2)
+
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
+        self.assertTrue(any(ship.contains(partner2) for ship in self.person.partners))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
+        self.assertTrue(any(ship.contains(self.person) for ship in partner2.partners))
 
     def testPolyPartners(self):
         Settings.allowPolyShips = True
