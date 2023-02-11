@@ -39,4 +39,4 @@ class personTests(unittest.TestCase):
 
 
     def testRelationTileRetevial(self) -> None:
-        self.assertEqual(Mappings.getTileFromPersonId(self.mainPerson.mothers.id), self.motherTile)
+        self.assertTrue(any(Mappings.getTileFromPersonId(mother.getParent().id) == self.motherTile for mother in self.mainPerson.getMothers()))

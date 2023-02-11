@@ -116,7 +116,7 @@ class MotherChildRelation(ParentChildRelation):
 
 	def onRemove(self) -> None:
 		super().onRemove()
-		self.getChild().mothers.remove(self)
+		self.getChild().getMothers().remove(self)
 
 	def getDefaultColor(self) -> tuple[int, int, int]:
 		return Settings.motherRelationColor
@@ -132,15 +132,15 @@ class PartneredRelation(Relationship):
 
 	def __init__(self, caller: 'Person', other: 'Person') -> None:
 		super().__init__(caller.id, other.id, LineDrawType.HORIZONTAL)
-		other.partners.add(self)
+		other.getPartners().add(self)
 
 	def onRemove(self) -> None:
-		Mappings.getPersonFromId(self.person2).partners.remove(self)
-		Mappings.getPersonFromId(self.person1).partners.remove(self)
+		Mappings.getPersonFromId(self.person2).getPartners().remove(self)
+		Mappings.getPersonFromId(self.person1).getPartners().remove(self)
 
 		exShip = ExPartnerRelation(Mappings.getPersonFromId(self.person1), Mappings.getPersonFromId(self.person2))
-		Mappings.getPersonFromId(self.person1).exPartners.add(exShip)
-		Mappings.getPersonFromId(self.person2).exPartners.add(exShip)
+		Mappings.getPersonFromId(self.person1).getExPartners().add(exShip)
+		Mappings.getPersonFromId(self.person2).getExPartners().add(exShip)
 
 	def isAPartner(self, partner: 'Person') -> bool:
 		return partner == self.person1 or partner == self.person2
@@ -155,12 +155,12 @@ class ExPartnerRelation(Relationship):
 
 	def onRemove(self) -> None:
 		# assuming that if they are no longer an ex then they got back together
-		Mappings.getPersonFromId(self.person2).exPartners.remove(self)
-		Mappings.getPersonFromId(self.person1).exPartners.remove(self)
+		Mappings.getPersonFromId(self.person2).getExPartners().remove(self)
+		Mappings.getPersonFromId(self.person1).getExPartners().remove(self)
 
 		newShip = PartneredRelation(Mappings.getPersonFromId(self.person1), Mappings.getPersonFromId(self.person2))
-		Mappings.getPersonFromId(self.person1).partners.add(newShip)
-		Mappings.getPersonFromId(self.person2).partners.add(newShip)
+		Mappings.getPersonFromId(self.person1).getPartners().add(newShip)
+		Mappings.getPersonFromId(self.person2).getPartners().add(newShip)
 
 	def getDefaultColor(self) -> tuple[int, int, int]:
 		return Settings.exPartnerRelationColor

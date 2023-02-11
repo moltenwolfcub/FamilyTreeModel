@@ -95,8 +95,8 @@ class personTests(unittest.TestCase):
         self.person.setMother(self.mother)
         self.person.setMother(mother)
 
-        self.assertTrue(any(ship.isParent(self.mother) for ship in self.person.mothers))
-        self.assertTrue(any(ship.isParent(mother) for ship in self.person.mothers))
+        self.assertTrue(any(ship.isParent(self.mother) for ship in self.person.getMothers()))
+        self.assertTrue(any(ship.isParent(mother) for ship in self.person.getMothers()))
         self.assertTrue(any(ship.isChild(self.person) for ship in mother.children))
         self.assertTrue(any(ship.isChild(self.person) for ship in self.mother.children))
 
@@ -149,8 +149,8 @@ class personTests(unittest.TestCase):
         self.person.setFather(self.father)
         self.person.setFather(father)
 
-        self.assertTrue(any(ship.isParent(self.father) for ship in self.person.fathers))
-        self.assertTrue(any(ship.isParent(father) for ship in self.person.fathers))
+        self.assertTrue(any(ship.isParent(self.father) for ship in self.person.getFathers()))
+        self.assertTrue(any(ship.isParent(father) for ship in self.person.getFathers()))
         self.assertTrue(any(ship.isChild(self.person) for ship in father.children))
         self.assertTrue(any(ship.isChild(self.person) for ship in self.father.children))
 
@@ -227,8 +227,8 @@ class personTests(unittest.TestCase):
     #region partners
     def testPartner(self):
         self.person.setPartner(self.partner)
-        self.assertTrue(any(ship.getOtherPerson(self.person) == self.partner for ship in self.person.partners))
-        self.assertTrue(any(ship.getOtherPerson(self.partner) == self.person for ship in self.partner.partners))
+        self.assertTrue(any(ship.getOtherPerson(self.person) == self.partner for ship in self.person.getPartners()))
+        self.assertTrue(any(ship.getOtherPerson(self.partner) == self.person for ship in self.partner.getPartners()))
     
     def testPartnerChange(self):
         Settings.allowPolyShips = False
@@ -237,15 +237,15 @@ class personTests(unittest.TestCase):
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
 
-        self.assertTrue(any(ship.getOtherPerson(self.person) == partner2 for ship in self.person.partners))
-        self.assertEqual(len(self.partner.partners), 0)
-        self.assertTrue(any(ship.getOtherPerson(partner2) == self.person for ship in partner2.partners))
+        self.assertTrue(any(ship.getOtherPerson(self.person) == partner2 for ship in self.person.getPartners()))
+        self.assertEqual(len(self.partner.getPartners()), 0)
+        self.assertTrue(any(ship.getOtherPerson(partner2) == self.person for ship in partner2.getPartners()))
 
     def testPartnerNoneSetter(self):
         self.person.setPartner(self.partner)
         self.person.setPartner(None)
 
-        self.assertTrue(not self.person.partners and not self.partner.partners)
+        self.assertTrue(not self.person.getPartners() and not self.partner.getPartners())
 
     def testPartnerSelf(self):
         with self.assertRaises(ValueError):
@@ -258,8 +258,8 @@ class personTests(unittest.TestCase):
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
 
-        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
-        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.getExPartners()))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.getExPartners()))
 
     def testMultipleExs(self):
         Settings.allowPolyShips = False
@@ -269,17 +269,17 @@ class personTests(unittest.TestCase):
         self.person.setPartner(partner2)
         self.person.setPartner(None)
 
-        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
-        self.assertTrue(any(ship.contains(partner2) for ship in self.person.exPartners))
-        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
-        self.assertTrue(any(ship.contains(self.person) for ship in partner2.exPartners))
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.getExPartners()))
+        self.assertTrue(any(ship.contains(partner2) for ship in self.person.getExPartners()))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.getExPartners()))
+        self.assertTrue(any(ship.contains(self.person) for ship in partner2.getExPartners()))
 
     def testPartnerRemovalExCreation(self):
         self.person.setPartner(self.partner)
         self.person.setPartner(None)
 
-        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
-        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.getExPartners()))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.getExPartners()))
 
     def testExRemoval(self):
         Settings.allowPolyShips = False
@@ -287,8 +287,8 @@ class personTests(unittest.TestCase):
         self.person.setPartner(None)
         self.person.setPartner(self.partner)
 
-        self.assertTrue(any(ship.getOtherPerson(self.person) is not self.partner for ship in self.person.exPartners) or len(self.person.exPartners) < 1)
-        self.assertTrue(any(ship.getOtherPerson(self.partner) is not self.person for ship in self.partner.exPartners) or len(self.partner.exPartners) < 1)
+        self.assertTrue(any(ship.getOtherPerson(self.person) is not self.partner for ship in self.person.getExPartners()) or len(self.person.getExPartners()) < 1)
+        self.assertTrue(any(ship.getOtherPerson(self.partner) is not self.person for ship in self.partner.getExPartners()) or len(self.partner.getExPartners()) < 1)
 
     def testExAndNewRetainment(self):
         Settings.allowPolyShips = False
@@ -297,20 +297,20 @@ class personTests(unittest.TestCase):
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
 
-        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.exPartners))
-        self.assertTrue(any(ship.contains(partner2) for ship in self.person.partners))
-        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.exPartners))
-        self.assertTrue(any(ship.contains(self.person) for ship in partner2.partners))
+        self.assertTrue(any(ship.contains(self.partner) for ship in self.person.getExPartners()))
+        self.assertTrue(any(ship.contains(partner2) for ship in self.person.getPartners()))
+        self.assertTrue(any(ship.contains(self.person) for ship in self.partner.getExPartners()))
+        self.assertTrue(any(ship.contains(self.person) for ship in partner2.getPartners()))
 
     def testPolyPartners(self):
         Settings.allowPolyShips = True
         partner2: Person = Person(5, "John", "testFace", Ids.MALE)
         self.person.setPartner(self.partner)
         self.person.setPartner(partner2)
-        self.assertTrue(any(ship.getOtherPerson(self.person) == self.partner for ship in self.person.partners))
-        self.assertTrue(any(ship.getOtherPerson(self.person) == partner2 for ship in self.person.partners))
-        self.assertTrue(any(ship.getOtherPerson(self.partner) == self.person for ship in self.partner.partners))
-        self.assertTrue(any(ship.getOtherPerson(partner2) == self.person for ship in partner2.partners))
+        self.assertTrue(any(ship.getOtherPerson(self.person) == self.partner for ship in self.person.getPartners()))
+        self.assertTrue(any(ship.getOtherPerson(self.person) == partner2 for ship in self.person.getPartners()))
+        self.assertTrue(any(ship.getOtherPerson(self.partner) == self.person for ship in self.partner.getPartners()))
+        self.assertTrue(any(ship.getOtherPerson(partner2) == self.person for ship in partner2.getPartners()))
 
     def testPolyPartnerNoneSetter(self):
         Settings.allowPolyShips = True
@@ -319,7 +319,7 @@ class personTests(unittest.TestCase):
         self.person.setPartner(partner2)
         self.person.setPartner(None)
 
-        self.assertTrue(not self.person.partners and not self.partner.partners and not partner2.partners)
+        self.assertTrue(not self.person.getPartners() and not self.partner.getPartners() and not partner2.getPartners())
     #endregion partners
     
     #region extendedFamily
