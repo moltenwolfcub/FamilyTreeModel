@@ -39,33 +39,31 @@ class Person:
 		return f"Person <name: {self.fullName}, id: {self.id}, sex: {Ids.convertSexBool(self.sex)}>"
 
 
-	def setMother(self, mother: 'Person') -> 'Person':
-		if mother is self:
-			raise ValueError("""Can't set yourself as your own mother!""")
-		if mother is not None and mother.sex is not Ids.FEMALE:
-			raise ValueError("""The Mother provided isn't female. If you want
-				to set this anyway, chagne ignoreSex to True.""")
+	def _setParent(self, relationType: str, otherPerson: 'Person', newRelationClass: type[Relationship], expectedSex: int = None) -> 'Person':
+		if relationType not in ["mother", "father"]:
+			raise ValueError("Invalid relation type provided. Please provide either 'mother' or 'father'.")
+		
+		if otherPerson is self:
+			raise ValueError(f"Can't set yourself as your own {relationType}!")
+		
+		if expectedSex is not None and otherPerson is not None and otherPerson.sex != expectedSex:
+			raise ValueError(f"The {relationType} provided isn't {'male' if expectedSex == Ids.MALE else 'female'}. If you want to set this anyway, change ignoreSex to True.")
 
-		if (not Settings.allowMoreParents or mother is None):
-			[remove.removeRelation() for remove in list(self._mothers)]
-		if mother is not None:
-			self._mothers.add(MotherChildRelation(self, mother))
+		relations: set[Relationship] = getattr(self, f"_{relationType}s")
+
+		if not Settings.allowMoreParents or otherPerson is None:
+			[remove.removeRelation() for remove in list(relations)]
+
+		if otherPerson is not None:
+			relations.add(newRelationClass(self, otherPerson))
 
 		return self
+
+	def setMother(self, mother: 'Person') -> 'Person':
+		return self._setParent("mother", mother, MotherChildRelation, Ids.FEMALE)
 
 	def setFather(self, father: 'Person') -> 'Person':
-		if father is self:
-			raise ValueError("""Can't set yourself as your own father!""")
-		if father is not None and father.sex is not Ids.MALE:
-			raise ValueError("""The Father provided isn't male. If you want
-				to set this anyway, chagne ignoreSex to True.""")
-
-		if (not Settings.allowMoreParents or father is None):
-			[remove.removeRelation() for remove in list(self._fathers)]
-		if father is not None:
-			self._fathers.add(FatherChildRelation(self, father))
-
-		return self
+		return self._setParent("father", father, FatherChildRelation, Ids.MALE)
 
 	def setPartner(self, partner: 'Person') -> 'Person':
 		if partner is self:
