@@ -95,8 +95,8 @@ class personTests(unittest.TestCase):
         self.person.setMother(self.mother)
         self.person.setMother(mother)
 
-        self.assertTrue(any(ship.isMother(self.mother) for ship in self.person.mothers))
-        self.assertTrue(any(ship.isMother(mother) for ship in self.person.mothers))
+        self.assertTrue(any(ship.isParent(self.mother) for ship in self.person.mothers))
+        self.assertTrue(any(ship.isParent(mother) for ship in self.person.mothers))
         self.assertTrue(any(ship.isChild(self.person) for ship in mother.children))
         self.assertTrue(any(ship.isChild(self.person) for ship in self.mother.children))
 
@@ -141,6 +141,22 @@ class personTests(unittest.TestCase):
         father: Person = Person(15, "girlFather", "mcTest", Ids.FEMALE)
         with self.assertRaises(ValueError):
             self.person.setFather(father)
+
+    def testMoreFathers(self):
+        Settings.allowMoreParents = True
+        father: Person = Person(18, "Father", "mcTest", Ids.MALE, "beta")
+
+        self.person.setFather(self.father)
+        self.person.setFather(father)
+
+        self.assertTrue(any(ship.isParent(self.father) for ship in self.person.fathers))
+        self.assertTrue(any(ship.isParent(father) for ship in self.person.fathers))
+        self.assertTrue(any(ship.isChild(self.person) for ship in father.children))
+        self.assertTrue(any(ship.isChild(self.person) for ship in self.father.children))
+
+    def testFatherSelf(self):
+        with self.assertRaises(ValueError):
+            self.person.setFather(self.person)
     #endregion father
 
     #region siblings

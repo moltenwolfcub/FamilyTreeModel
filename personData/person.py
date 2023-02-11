@@ -30,7 +30,7 @@ class Person:
         self.exPartners: set[ExPartnerRelation] = set()
 
         self.mothers: set[MotherChildRelation] = set()
-        self.father: FatherChildRelation = None
+        self.fathers: set[FatherChildRelation] = set()
         self.children: set[ParentChildRelation] = set()
 
         Mappings.addPerson(self)
@@ -40,8 +40,6 @@ class Person:
 
 
     def setMother(self, mother: 'Person') -> 'Person':
-        # self.mothers = self.setShip(mother, self.mothers, lambda m: MotherChildRelation(self, m), 
-        #     None, lambda sex: sex == Ids.FEMALE)
         if mother is self:
             raise ValueError("""Can't set yourself as your own mother!""")
         if mother is not None and mother.sex is not Ids.FEMALE:
@@ -56,8 +54,17 @@ class Person:
         return self
 
     def setFather(self, father: 'Person') -> 'Person':
-        self.father = self.setShip(father, self.father, lambda p: FatherChildRelation(self, p), 
-            None, lambda sex: sex == Ids.MALE)
+        if father is self:
+            raise ValueError("""Can't set yourself as your own father!""")
+        if father is not None and father.sex is not Ids.MALE:
+            raise ValueError("""The Father provided isn't male. If you want
+                to set this anyway, chagne ignoreSex to True.""")
+
+        if (not Settings.allowMoreParents or father is None):
+            [remove.removeRelation() for remove in list(self.fathers)]
+        if father is not None:
+            self.fathers.add(FatherChildRelation(self, father))
+
         return self
 
     def setPartner(self, partner: 'Person') -> 'Person':
@@ -102,10 +109,10 @@ class Person:
 
 
     def getDirectSiblings(self) -> set['Person']:
-        if self.mothers is None or self.father is None:
+        if self.mothers is None or self.fathers is None:
             return set()
         motherChildrenShips: set[ParentChildRelation] = self.mothers.getParent().children
-        fatherChildrenShips: set[ParentChildRelation] = self.father.getParent().children
+        fatherChildrenShips: set[ParentChildRelation] = self.fathers.getParent().children
         motherChildren: set['Person'] = set()
         fatherChildren: set['Person'] = set()
         for ship in motherChildrenShips:
@@ -126,8 +133,8 @@ class Person:
             for ship in motherChildrenShips:
                 motherChildren.add(ship.getChild())
 
-        if self.father is not None:
-            fatherChildrenShips: set[ParentChildRelation] = self.father.getParent().children
+        if self.fathers is not None:
+            fatherChildrenShips: set[ParentChildRelation] = self.fathers.getParent().children
             for ship in fatherChildrenShips:
                 fatherChildren.add(ship.getChild())
 
@@ -141,8 +148,8 @@ class Person:
         fatherSiblings: set['Person'] = set()
         if self.mothers is not None:
             motherSiblings = self.mothers.getParent().getAllSiblings()
-        if self.father is not None:
-            fatherSiblings = self.father.getParent().getAllSiblings()
+        if self.fathers is not None:
+            fatherSiblings = self.fathers.getParent().getAllSiblings()
 
         allParentSiblings: set['Person'] = motherSiblings.union(fatherSiblings)
         return allParentSiblings

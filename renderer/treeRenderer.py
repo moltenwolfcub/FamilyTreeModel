@@ -32,9 +32,12 @@ class TreeRenderer:
         test2 = Person(Ids.getNextFreePersonId(Mappings.people), "Test2", "Something", Ids.MALE)
         test3 = Person(Ids.getNextFreePersonId(Mappings.people), "Test3", "Something", Ids.FEMALE)
         test4 = Person(Ids.getNextFreePersonId(Mappings.people), "Test4", "Something", Ids.FEMALE)
+        test5 = Person(Ids.getNextFreePersonId(Mappings.people), "Test5", "Something", Ids.MALE)
 
-        test3.setMother(test).setMother(test4).setFather(test2)
-        test.setPartner(test2).setPartner(test4)
+        test3.setMother(test).setMother(test4).setFather(test2).setFather(test5)
+        test.setPartner(test2).setPartner(test4).setPartner(test5)
+        test5.setPartner(test2).setPartner(test4)
+        test4.setPartner(test2)
 
         for person in Mappings.people:
             Tile(self, person)

@@ -98,7 +98,7 @@ class ParentChildRelation(Relationship):
 	def isChild(self, child: 'Person') -> bool:
 		return self.person1 == child.id
 
-	def isMother(self, parent: 'Person') -> bool:
+	def isParent(self, parent: 'Person') -> bool:
 		return self.person2 == parent.id
 
 	def getParent(self) -> 'Person':
