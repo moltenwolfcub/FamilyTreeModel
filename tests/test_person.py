@@ -17,7 +17,7 @@ class personTests(unittest.TestCase):
 
         self.partner: Person = Person(4, "Testo", "testalon", Ids.MALE)
     
-
+    #region personInfo
     def testId(self):
         self.assertEqual(self.person.id, 0)
 
@@ -49,27 +49,38 @@ class personTests(unittest.TestCase):
     def testMiddleName(self):
         testPerson: Person = Person(16, "john", "smith", Ids.MALE, ["kevin", "jones"])
         self.assertEqual(testPerson.middleNames, ['kevin', 'jones'])
-
+    #endregion personInfo
     
+    #region mother
     def testMotherHasChild(self):
         self.person.setMother(self.mother)
 
         self.assertTrue(any(ship.isChild(self.person) for ship in self.mother.children))
 
     def testMotherWillLoseChildOnReplace(self):
-        self.person.setMother(self.mother)
+        Settings.allowMoreParents = False
         mother = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
+
+        self.person.setMother(self.mother)
         self.person.setMother(mother)
 
-        self.assertFalse(self.person in self.mother.children)
-
+        self.assertFalse(any(ship.isChild(self.person) for ship in self.mother.children))
 
     def testMotherRemoval(self):
+        Settings.allowMoreParents = False
         self.person.setMother(self.mother)
         self.person.setMother(None)
 
-        self.assertFalse(self.person in self.mother.children)
+        self.assertFalse(any(ship.isChild(self.person) for ship in self.mother.children))
 
+    def testMotherChanging(self):
+        Settings.allowMoreParents = False
+        mother = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
+
+        self.person.setMother(self.mother)
+        self.person.setMother(mother)
+
+        self.assertTrue(any(ship.isChild(self.person) for ship in mother.children))
 
     def testMotherSettingIncorrectSex(self):
         Settings.ignoreSex = False
@@ -77,32 +88,62 @@ class personTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.person.setMother(mother)
 
+    def testMoreMothers(self):
+        Settings.allowMoreParents = True
+        mother = Person(18, "Mother", "mcTest", Ids.FEMALE, "beta")
 
+        self.person.setMother(self.mother)
+        self.person.setMother(mother)
+
+        self.assertTrue(any(ship.isMother(self.mother) for ship in self.person.mothers))
+        self.assertTrue(any(ship.isMother(mother) for ship in self.person.mothers))
+        self.assertTrue(any(ship.isChild(self.person) for ship in mother.children))
+        self.assertTrue(any(ship.isChild(self.person) for ship in self.mother.children))
+
+    def testMotherSelf(self):
+        with self.assertRaises(ValueError):
+            self.person.setMother(self.person)
+    #endregion mother
+
+    #region father
     def testFatherHasChild(self):
+        Settings.allowMoreParents = False
         self.person.setFather(self.father)
 
         self.assertTrue(any(ship.isChild(self.person) for ship in self.father.children))
 
     def testFatherWillLoseChildOnReplace(self):
-        self.person.setFather(self.father)
+        Settings.allowMoreParents = False
         father: Person = Person(18, "Father", "mcTest", Ids.MALE, "beta")
+        self.person.setFather(self.father)
         self.person.setFather(father)
 
-        self.assertFalse(self.person in self.father.children)
+        self.assertFalse(any(ship.isChild(self.person) for ship in self.father.children))
 
     def testFatherRemoval(self):
+        Settings.allowMoreParents = False
         self.person.setFather(self.father)
         self.person.setFather(None)
 
-        self.assertFalse(self.person in self.father.children)
+        self.assertFalse(any(ship.isChild(self.person) for ship in self.father.children))
+
+    def testFatherChanging(self):
+        Settings.allowMoreParents = False
+        father: Person = Person(18, "Father", "mcTest", Ids.MALE, "beta")
+
+        self.person.setFather(self.father)
+        self.person.setFather(father)
+
+        self.assertTrue(any(ship.isChild(self.person) for ship in father.children))
 
     def testFatherSettingIncorrectSex(self):
         Settings.ignoreSex = False
         father: Person = Person(15, "girlFather", "mcTest", Ids.FEMALE)
         with self.assertRaises(ValueError):
             self.person.setFather(father)
-    
+    #endregion father
 
+    #region siblings
     def testOneSiblings(self):
         self.person.setFather(self.father)
         self.person.setMother(self.mother)
@@ -165,8 +206,9 @@ class personTests(unittest.TestCase):
         self.person.setMother(self.mother)
 
         self.assertNotIn(self.person, self.person.getAllSiblings())
+    #endregion siblings
 
-
+    #region partners
     def testPartner(self):
         self.person.setPartner(self.partner)
         self.assertTrue(any(ship.getOtherPerson(self.person) == self.partner for ship in self.person.partners))
@@ -262,8 +304,9 @@ class personTests(unittest.TestCase):
         self.person.setPartner(None)
 
         self.assertTrue(not self.person.partners and not self.partner.partners and not partner2.partners)
-
+    #endregion partners
     
+    #region extendedFamily
     def testOneParentSibling(self):
         self.mother.setMother(self.grandma)
         self.sibling.setMother(self.grandma)
@@ -350,7 +393,7 @@ class personTests(unittest.TestCase):
         self.sibling.setMother(self.grandma)
         self.cousin.setFather(self.sibling)
         self.assertIn(self.cousin, self.person.getCousins())
-
+    #endregion extendedFamily
 
 if __name__ == '__main__':
     unittest.main()

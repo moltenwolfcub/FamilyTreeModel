@@ -18,7 +18,7 @@ class personTests(unittest.TestCase):
 
         self.mother: Person = Person(1, "mother", "mcTest", Ids.FEMALE)
         self.motherTile = Tile(self.rendererInstance, self.mother)
-        self.mainPerson.mother = self.mother
+        self.mainPerson.setMother(self.mother)
 
     
     def testCorrectPerson(self) -> None:
@@ -39,4 +39,4 @@ class personTests(unittest.TestCase):
 
 
     def testRelationTileRetevial(self) -> None:
-        self.assertEqual(Mappings.getTileFromPersonId(self.mainPerson.mother.id), self.motherTile)
+        self.assertEqual(Mappings.getTileFromPersonId(self.mainPerson.mothers.id), self.motherTile)

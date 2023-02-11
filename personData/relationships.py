@@ -93,7 +93,7 @@ class ParentChildRelation(Relationship):
 		parent.children.add(self)
 
 	def onRemove(self) -> None:
-		Mappings.getPersonFromId(self.person2).children.remove(self)
+		self.getParent().children.remove(self)
 
 	def isChild(self, child: 'Person') -> bool:
 		return self.person1 == child.id
@@ -113,6 +113,10 @@ class ParentChildRelation(Relationship):
 class MotherChildRelation(ParentChildRelation):
 	def __init__(self, child: 'Person', mother: 'Person') -> None:
 		super().__init__(child, mother)
+
+	def onRemove(self) -> None:
+		super().onRemove()
+		self.getChild().mothers.remove(self)
 
 	def getDefaultColor(self) -> tuple[int, int, int]:
 		return Settings.motherRelationColor
