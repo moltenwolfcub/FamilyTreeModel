@@ -46,7 +46,7 @@ class Person:
 		if otherPerson is self:
 			raise ValueError(f"Can't set yourself as your own {relationType}!")
 		
-		if expectedSex is not None and otherPerson is not None and otherPerson.sex != expectedSex:
+		if expectedSex is not None and otherPerson and otherPerson.sex != expectedSex and not Settings.ignoreSex:
 			raise ValueError(f"The {relationType} provided isn't {'male' if expectedSex == Ids.MALE else 'female'}. If you want to set this anyway, change ignoreSex to True.")
 
 		relations: set[Relationship] = getattr(self, f"_{relationType}s")
